@@ -1,0 +1,321 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Accessibility Review — {{FILENAME}}</title>
+    <link rel="stylesheet" href="a11y-design-review-report.template.css" />
+    <!-- Resolve theme before first paint to avoid flash of wrong theme -->
+    <script>
+      (function () {
+        var s = localStorage.getItem('a11y-report-theme');
+        var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        document.documentElement.dataset.theme = s || (prefersDark ? 'dark' : 'light');
+      })();
+    </script>
+  </head>
+  <body>
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+
+    <header class="page-header" aria-label="Site header">
+      <div class="page-header__inner">
+        <div class="page-header__title-group">
+          <span class="page-header__label">Accessibility Review</span>
+          <h1 class="page-header__title">{{FILENAME}}</h1>
+        </div>
+        <button
+          class="theme-toggle"
+          id="theme-toggle"
+          type="button"
+          aria-label="Switch to light theme"
+        >
+          <!-- Sun icon: shown in dark mode, press to switch to light -->
+          <svg
+            class="theme-toggle__icon theme-toggle__icon--sun"
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+            focusable="false"
+          >
+            <circle cx="12" cy="12" r="5" />
+            <line x1="12" y1="1" x2="12" y2="3" />
+            <line x1="12" y1="21" x2="12" y2="23" />
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+            <line x1="1" y1="12" x2="3" y2="12" />
+            <line x1="21" y1="12" x2="23" y2="12" />
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
+          </svg>
+          <!-- Moon icon: shown in light mode, press to switch to dark -->
+          <svg
+            class="theme-toggle__icon theme-toggle__icon--moon"
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+            focusable="false"
+          >
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+          </svg>
+        </button>
+      </div>
+      <!-- Live region: announces theme change to screen readers -->
+      <div class="sr-only" id="theme-status" aria-live="polite" aria-atomic="true"></div>
+    </header>
+
+    <main id="main-content" aria-label="Accessibility review report">
+      <!-- EXECUTIVE SUMMARY PLACEHOLDER — replace with generated executive summary section -->
+      {{EXECUTIVE_SUMMARY}}
+
+      <!-- =============================================
+         SECTION 1: Annotated design
+         ============================================= -->
+      <section class="section" aria-labelledby="design-heading">
+        <h2 class="section__heading" id="design-heading">Annotated Design</h2>
+
+        <!-- Legend -->
+        <ul class="legend" aria-label="Bubble legend">
+          <li class="legend__item">
+            <span class="bubble bubble--neutral" aria-hidden="true">E</span>
+            Element marker
+          </li>
+          <li class="legend__item">
+            <span class="bubble bubble--critical" aria-hidden="true">C</span>
+            Critical issue
+          </li>
+          <li class="legend__item">
+            <span class="bubble bubble--high" aria-hidden="true">H</span>
+            High severity issue
+          </li>
+          <li class="legend__item">
+            <span class="bubble bubble--medium" aria-hidden="true">M</span>
+            Medium severity issue
+          </li>
+          <li class="legend__item legend__item--toggle">
+            <button
+              class="markers-toggle"
+              id="markers-toggle"
+              type="button"
+              aria-pressed="true"
+              aria-controls="design-figure"
+            >
+              <!-- Eye-open icon: shown when markers are visible (aria-pressed=true) -->
+              <svg
+                class="toggle-icon toggle-icon--visible"
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+                focusable="false"
+              >
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                <circle cx="12" cy="12" r="3" />
+              </svg>
+              <!-- Eye-closed icon: shown when markers are hidden (aria-pressed=false) -->
+              <svg
+                class="toggle-icon toggle-icon--hidden"
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+                focusable="false"
+              >
+                <path
+                  d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"
+                />
+                <path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19" />
+                <line x1="1" y1="1" x2="23" y2="23" />
+              </svg>
+              <span class="toggle-label">Hide markers</span>
+            </button>
+          </li>
+        </ul>
+
+        <!-- Design with overlaid bubbles -->
+        <figure class="design-container" id="design-figure" style="padding-top: {{ASPECT_RATIO}};">
+          <figcaption class="sr-only">
+            Annotated design screenshot of {{FILENAME}} with accessibility markers. Numbered bubbles
+            indicate reviewed elements;
+          </figcaption>
+          <div
+            class="design-image"
+            role="presentation"
+            aria-hidden="true"
+            style="background-image: url('design.jpg')"
+          ></div>
+
+          <!-- BUBBLES PLACEHOLDER — replace with one element per detected item -->
+          <!-- Neutral (no linked issue):
+             <span class="bubble bubble--neutral" style="left: X%; top: Y%;" aria-label="LABEL (N1)">N1</span>
+             Issue bubble (links to report):
+             <a href="#issue-C1" class="bubble bubble--critical" style="left: X%; top: Y%;" aria-label="LABEL (C1)">C1</a>
+             Text inside bubble = full severity code (C1, H1, M1, N1, …) so severity is communicated by both colour and text. -->
+          {{BUBBLES}}
+        </figure>
+      </section>
+
+      <!-- ELEMENTS PANEL PLACEHOLDER — replace with generated elements panel section -->
+      {{ELEMENTS_PANEL}}
+
+      <!-- ISSUES PANEL PLACEHOLDER — replace with generated issues panel section -->
+      {{ISSUES_PANEL}}
+
+      <!-- META PANEL PLACEHOLDER — replace with generated meta section -->
+      {{META_PANEL}}
+    </main>
+
+    <script>
+      (function () {
+        var table = document.querySelector('.elements-table');
+        if (!table) return;
+        var tbody = table.querySelector('tbody');
+        var sortState = { col: null, dir: null };
+        var ISSUE_RANK = { critical: 0, high: 1, medium: 2, none: 99 };
+
+        function sortRows(col, dir) {
+          var rows = Array.from(tbody.querySelectorAll('tr'));
+          rows.sort(function (a, b) {
+            var av, bv;
+            if (col === 'id') {
+              av = parseInt(a.dataset.sortId, 10);
+              bv = parseInt(b.dataset.sortId, 10);
+              return dir === 'asc' ? av - bv : bv - av;
+            }
+            if (col === 'tag') {
+              av = a.dataset.sortTag || '';
+              bv = b.dataset.sortTag || '';
+              return dir === 'asc' ? av.localeCompare(bv) : bv.localeCompare(av);
+            }
+            if (col === 'issue') {
+              av = ISSUE_RANK[a.dataset.sortIssue] != null ? ISSUE_RANK[a.dataset.sortIssue] : 99;
+              bv = ISSUE_RANK[b.dataset.sortIssue] != null ? ISSUE_RANK[b.dataset.sortIssue] : 99;
+              return dir === 'asc' ? av - bv : bv - av;
+            }
+            return 0;
+          });
+          rows.forEach(function (r) {
+            tbody.appendChild(r);
+          });
+        }
+
+        function updateHeaders(activeCol, activeDir) {
+          table.querySelectorAll('th[data-sort-col]').forEach(function (th) {
+            th.setAttribute(
+              'aria-sort',
+              th.dataset.sortCol === activeCol
+                ? activeDir === 'asc'
+                  ? 'ascending'
+                  : 'descending'
+                : 'none'
+            );
+          });
+        }
+
+        table.querySelectorAll('.sort-btn').forEach(function (btn) {
+          btn.addEventListener('click', function () {
+            var th = btn.closest('th');
+            var col = th.dataset.sortCol;
+            var dir = sortState.col === col && sortState.dir === 'asc' ? 'desc' : 'asc';
+            sortState.col = col;
+            sortState.dir = dir;
+            sortRows(col, dir);
+            updateHeaders(col, dir);
+          });
+        });
+
+        // Default: sort by Issue ascending on load
+        sortState.col = 'issue';
+        sortState.dir = 'asc';
+        sortRows('issue', 'asc');
+        updateHeaders('issue', 'asc');
+
+        // Hide/show elements with no issues
+        var noIssuesToggle = document.getElementById('no-issues-toggle');
+        if (noIssuesToggle) {
+          // Apply default hidden state on load
+          tbody.querySelectorAll('tr[data-sort-issue="none"]').forEach(function (row) {
+            row.hidden = true;
+          });
+
+          noIssuesToggle.addEventListener('click', function () {
+            var hiding = noIssuesToggle.getAttribute('aria-pressed') === 'true';
+            var next = !hiding;
+            noIssuesToggle.setAttribute('aria-pressed', String(next));
+            noIssuesToggle.querySelector('.toggle-label').textContent = next
+              ? 'Show all elements'
+              : 'Show only elements with issues';
+            tbody.querySelectorAll('tr[data-sort-issue="none"]').forEach(function (row) {
+              row.hidden = next;
+            });
+          });
+        }
+      })();
+    </script>
+
+    <script>
+      (function () {
+        var toggleBtn = document.getElementById('markers-toggle');
+        var figure = document.getElementById('design-figure');
+        if (!toggleBtn || !figure) return;
+
+        toggleBtn.addEventListener('click', function () {
+          var isShowing = toggleBtn.getAttribute('aria-pressed') === 'true';
+          var next = !isShowing;
+          toggleBtn.setAttribute('aria-pressed', String(next));
+          toggleBtn.querySelector('.toggle-label').textContent = next
+            ? 'Hide markers'
+            : 'Show markers';
+          figure.classList.toggle('design-container--markers-hidden', !next);
+        });
+      })();
+    </script>
+
+    <script>
+      (function () {
+        var btn = document.getElementById('theme-toggle');
+        var status = document.getElementById('theme-status');
+
+        function updateButton(theme) {
+          btn.setAttribute(
+            'aria-label',
+            theme === 'dark' ? 'Switch to light theme' : 'Switch to dark theme'
+          );
+        }
+
+        // Sync button label with the theme already applied by the inline head script
+        updateButton(document.documentElement.dataset.theme);
+
+        btn.addEventListener('click', function () {
+          var current = document.documentElement.dataset.theme;
+          var next = current === 'dark' ? 'light' : 'dark';
+          document.documentElement.dataset.theme = next;
+          localStorage.setItem('a11y-report-theme', next);
+          updateButton(next);
+          // Announce to screen readers
+          status.textContent = next === 'dark' ? 'Dark theme applied' : 'Light theme applied';
+        });
+      })();
+    </script>
+  </body>
+</html>
