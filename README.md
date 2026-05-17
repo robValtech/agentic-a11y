@@ -28,7 +28,11 @@ The orchestrator/sub-agent agent approach improved output quality and consistenc
 
 ### Bottlenecks
 
-A few bottlenecks have been identified affecting execution time.
+**A few bottlenecks have been identified affecting execution time:**
+
+1. Using large images increases token use and analysis time without any additional value
+2. Models with powerful reasoning capabilities take longer to execute the analysis, but not adding much more value
+3. Bouncing tasks and multiple tool calls between sub agents adds significant amount of time to the process
 
 > 💡
 > By removing these bottlenecks it is possible to reduce the end-to-end execution time under 90 seconds for complex designs (currently 8 minutes), and 30 seconds for less complex ones (currently 2.5 minutes).
@@ -79,3 +83,19 @@ Spinning up sub-agents and calling CLI commands separately cost unecessary extra
 >
 > 1. Move everything into a single agent that uses GTP-4o. No more sub-agents.
 > 2. Group CLI commands together and use pipes to reduce the various tool spin/wait/execution times.
+
+---
+
+I want to rebuild this agent tool in a way that it's more efficient and simpler.
+
+We will keep the image analyst agent and the orchestrator agent. The analyst's responsibilities remain unchanged. The orchestrator will be responsible for:
+
+- overall orchestration (single agent exposed to the user)
+- input validation
+- create the folders and artifacts
+- Convert the input image into design.jpg and proportionally scale it down to 1440px wide if the input image width is larger than 1440px
+- liaise with the analyst sub-agent (enforfce JSON schema contract)
+- report creation via Node generator script
+- final validation
+
+We'll create this update in a new branch and continue iterating until I am happy with the results.
