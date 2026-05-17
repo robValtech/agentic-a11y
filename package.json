@@ -1,0 +1,11 @@
+{
+  "name": "agentic-a11y",
+  "private": true,
+  "scripts": {
+    "validate:json": "node scripts/validate-json.mjs",
+    "validate:a11y-analysis": "node scripts/validate-json.mjs --schema .github/templates/a11y-design-review/a11y-analysis-result.schema.json"
+  },
+  "dependencies": {
+    "ajv": "^8.17.1"
+  }
+}
