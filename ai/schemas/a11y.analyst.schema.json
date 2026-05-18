@@ -1,0 +1,341 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "description": "Structured accessibility analysis output for a UI screenshot, containing detected UI elements and associated accessibility issues.",
+  "required": [
+    "version",
+    "meta",
+    "elements"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "version": {
+      "type": "string",
+      "const": "1.0.0",
+      "description": "Schema version. Must match the expected contract version to ensure compatibility with validation and processing logic."
+    },
+    "meta": {
+      "$ref": "#/definitions/meta",
+      "description": "Metadata describing the analysis execution and summarising key findings."
+    },
+    "elements": {
+      "type": "array",
+      "description": "List of UI elements detected in the screenshot. Each element represents a meaningful, user-relevant component of the interface. Accessibility issues are assigned to each UI element.",
+      "items": {
+        "$ref": "#/definitions/element"
+      }
+    },
+    "flags": {
+      "type": "array",
+      "description": "Global accessibility issues or low-confidence findings not tied to a specific UI element. Includes systemic issues or uncertain detections.",
+      "items": {
+        "$ref": "#/definitions/issue"
+      }
+    }
+  },
+  "definitions": {
+    "meta": {
+      "type": "object",
+      "description": "Metadata about the analysis run, including input identification and high-level summary.",
+      "required": [
+        "fileName",
+        "modelName",
+        "timestampStart",
+        "timestampEnd",
+        "prompt",
+        "keyFindings"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "fileName": {
+          "type": "string",
+          "description": "Name of the analysed image file."
+        },
+        "modelName": {
+          "type": "string",
+          "description": "Name of the model used to perform the analysis."
+        },
+        "timestampStart": {
+          "type": "number",
+          "description": "Unix timestamp in milliseconds representing when the analysis started."
+        },
+        "timestampEnd": {
+          "type": "number",
+          "description": "Unix timestamp in milliseconds representing when the analysis completed."
+        },
+        "prompt": {
+          "type": "string",
+          "description": "A concise summary of the instructions used to guide the analysis."
+        },
+        "keyFindings": {
+          "type": "string",
+          "description": "A brief (1–2 sentence) summary of the most significant accessibility issues identified."
+        }
+      }
+    },
+    "element": {
+      "type": "object",
+      "description": "A UI element detected in the image, with inferred semantics based on visual structure and accessibility best practices.",
+      "required": [
+        "tag",
+        "name",
+        "boundingBox",
+        "confidence"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "tag": {
+          "type": "string",
+          "description": "The inferred semantic HTML element or ARIA role that best represents this UI component. Must be selected from a predefined set of valid roles.",
+          "anyOf": [
+            {
+              "$ref": "#/definitions/htmlElements"
+            },
+            {
+              "$ref": "#/definitions/widgetRoles"
+            },
+            {
+              "$ref": "#/definitions/documentStructureRoles"
+            },
+            {
+              "$ref": "#/definitions/landmarkRoles"
+            },
+            {
+              "$ref": "#/definitions/liveRegionRoles"
+            },
+            {
+              "$ref": "#/definitions/windowRoles"
+            },
+            {
+              "$ref": "#/definitions/legacyRoles"
+            }
+          ]
+        },
+        "name": {
+          "type": "string",
+          "description": "Accessible name or visible label of the element as perceived by users (e.g. button text, input label, link text, region name)."
+        },
+        "boundingBox": {
+          "$ref": "#/definitions/boundingBox",
+          "description": "Approximate bounding box of the element within the image, using pixel coordinates relative to the top-left corner."
+        },
+        "confidence": {
+          "$ref": "#/definitions/confidence",
+          "description": "Represents the model's confidence that this UI element has been correctly detected and semantically classified. See ai/docs/a11y.confidence-scoring.md for confidence scoring guidelines."
+        },
+        "issue": {
+          "$ref": "#/definitions/issue",
+          "description": "Accessibility issue associated with this element. Only included for high-confidence, impactful findings."
+        }
+      }
+    },
+    "boundingBox": {
+      "type": "object",
+      "description": "Approximate bounding box of the element within the image. Coordinates are estimated based on visual analysis and should be treated as indicative rather than pixel-perfect.",
+      "required": [
+        "x",
+        "y",
+        "width",
+        "height"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "x": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Horizontal position (in pixels) from the left edge of the image to the top-left corner of the element."
+        },
+        "y": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Vertical position (in pixels) from the top edge of the image to the top-left corner of the element."
+        },
+        "width": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Approximate width of the element in pixels."
+        },
+        "height": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Approximate height of the element in pixels."
+        }
+      }
+    },
+    "issue": {
+      "type": "object",
+      "description": "A detected accessibility issue aligned with WCAG criteria.",
+      "required": [
+        "severity",
+        "title",
+        "wcag",
+        "description",
+        "fix",
+        "confidence"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "severity": {
+          "type": "string",
+          "enum": [
+            "critical",
+            "high",
+            "medium",
+            "low"
+          ],
+          "description": "Severity of the issue. See ai/docs/a11y.severity-levels.md for full definitions."
+        },
+        "title": {
+          "type": "string",
+          "description": "Short, descriptive name of the issue."
+        },
+        "wcag": {
+          "type": "array",
+          "description": "List of WCAG success criteria violated by this issue.",
+          "items": {
+            "type": "string",
+            "pattern": "^\\d+\\.\\d+\\.\\d+$",
+            "description": "WCAG success criterion number in the format X.X.X (e.g. 1.4.3)."
+          }
+        },
+        "description": {
+          "type": "string",
+          "description": "Detailed explanation of the issue and its impact on users, including affected user groups where relevant."
+        },
+        "fix": {
+          "type": "string",
+          "description": "Actionable guidance describing how to resolve the issue in design or implementation."
+        },
+        "confidence": {
+          "$ref": "#/definitions/confidence",
+          "description": "Represents the model's confidence that this accessibility issue is present and correctly mapped to the specified WCAG criteria. See ai/docs/a11y.confidence-scoring.md for confidence scoring guidelines."
+        }
+      }
+    },
+    "htmlElements": {
+      "type": "string",
+      "description": "Valid semantic HTML elements.",
+      "enum": [
+        "a",
+        "article",
+        "aside",
+        "button",
+        "footer",
+        "header",
+        "img",
+        "input",
+        "label",
+        "main",
+        "nav",
+        "section",
+        "textarea",
+        "select",
+        "ul",
+        "ol",
+        "li",
+        "table",
+        "thead",
+        "tbody",
+        "tfoot",
+        "tr",
+        "td",
+        "th"
+      ]
+    },
+    "widgetRoles": {
+      "type": "string",
+      "description": "ARIA widget roles representing interactive components.",
+      "enum": [
+        "button",
+        "checkbox",
+        "combobox",
+        "grid",
+        "link",
+        "listbox",
+        "menu",
+        "menubar",
+        "menuitem",
+        "radio",
+        "searchbox",
+        "slider",
+        "switch",
+        "tab",
+        "tabpanel",
+        "textbox",
+        "tree"
+      ]
+    },
+    "documentStructureRoles": {
+      "type": "string",
+      "description": "ARIA roles describing document structure elements.",
+      "enum": [
+        "article",
+        "heading",
+        "list",
+        "listitem",
+        "table",
+        "row"
+      ]
+    },
+    "landmarkRoles": {
+      "type": "string",
+      "description": "Landmark roles used to define major regions of the page for assistive technologies.",
+      "enum": [
+        "banner",
+        "complementary",
+        "contentinfo",
+        "form",
+        "main",
+        "navigation",
+        "region",
+        "search"
+      ]
+    },
+    "liveRegionRoles": {
+      "type": "string",
+      "description": "Roles used to indicate dynamic content updates to assistive technologies.",
+      "enum": [
+        "alert",
+        "log",
+        "status"
+      ]
+    },
+    "windowRoles": {
+      "type": "string",
+      "description": "Roles representing modal or dialog containers.",
+      "enum": [
+        "dialog",
+        "alertdialog"
+      ]
+    },
+    "legacyRoles": {
+      "type": "string",
+      "description": "Legacy or less commonly used ARIA roles.",
+      "enum": [
+        "landmark"
+      ]
+    },
+    "confidence": {
+      "$comment": "See ai/docs/a11y.confidence-scoring.md for confidence scoring guidelines.",
+      "type": "object",
+      "description": "Represents the model's confidence in a detection or finding, including both a quantitative score and a justification.",
+      "required": [
+        "level",
+        "reason"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "level": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Confidence score ranging from 0 (no confidence) to 1 (extremely high confidence). Must align with the defined confidence ranges."
+        },
+        "reason": {
+          "type": "string",
+          "description": "Explanation of why this confidence level was assigned, based on visual clarity, semantic certainty, and strength of inference."
+        }
+      }
+    }
+  }
+}
