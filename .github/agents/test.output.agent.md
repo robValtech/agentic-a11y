@@ -18,21 +18,23 @@ Store the user's prompt as `userPrompt`.
   TS_START=$(node -e "console.log(Date.now())") && \
   echo START TIMESTAMP:  $TS_START && \
   TS_FOLDER=$(node -e "console.log(new Date())") && \
+  TS_FOLDER_FROM_SCRIPT=$(node "ai/scripts/get-formatted-datetime.mjs") && \
   echo FOLDER TIMESTAMP: $TS_FOLDER
 ```
 
 ### Get the current agent and model
 
-Store the current AI agent as `harness`.
+Store the current AI agent as `agent`.
 
 Store the current AI model as `model`.
 
 ### Output
 
-| Item             | Value        |
-| ---------------- | ------------ |
-| Timestamp        | `$TS_START`  |
-| Folder Timestamp | `$TS_FOLDER` |
-| Prompt           | `userPrompt` |
-| Harness          | `harness`    |
-| Model            | `model`      |
+| Item                         | Value                    |
+| ---------------------------- | ------------------------ |
+| Timestamp                    | `$TS_START`              |
+| Folder Timestamp             | `$TS_FOLDER`             |
+| Folder Timestamp From Script | `$TS_FOLDER_FROM_SCRIPT` |
+| Prompt                       | `userPrompt`             |
+| Agent                        | `agent`                  |
+| Model                        | `model`                  |
