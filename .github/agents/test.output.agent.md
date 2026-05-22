@@ -1,7 +1,6 @@
 ---
 description: "Agent to test output session storage and node stdout values to chat window"
 tools: [execute]
-model: GPT-4o (copilot)
 argument-hint: "yoyo = run me"
 ---
 
