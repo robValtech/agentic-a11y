@@ -3,7 +3,7 @@
 export function getFormattedDateTime(timestamp = Date.now()) {
   const dateTime = new Date(timestamp)
     .toISOString()
-    .replace(/[-:.TZ]/g, "")
+    .replace(/[-:.TZ]/g, '')
     .slice(2, 14);
   return `${dateTime.substring(0, 6)}_${dateTime.slice(6)}`;
 }

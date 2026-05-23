@@ -1,33 +1,33 @@
 #!/usr/bin/env node
 
-import Ajv from "ajv";
-import { readFileSync } from "node:fs";
-import { resolve } from "node:path";
-import { fileURLToPath } from "node:url";
-import { parseArgs } from "./helpers.mjs";
+import Ajv from 'ajv';
+import { readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { parseArgs } from './helpers.mjs';
 
 function readStdin() {
   return new Promise((resolveInput, rejectInput) => {
-    let buffer = "";
-    process.stdin.setEncoding("utf8");
-    process.stdin.on("data", (chunk) => {
+    let buffer = '';
+    process.stdin.setEncoding('utf8');
+    process.stdin.on('data', (chunk) => {
       buffer += chunk;
     });
-    process.stdin.on("end", () => {
+    process.stdin.on('end', () => {
       resolveInput(buffer);
     });
-    process.stdin.on("error", rejectInput);
+    process.stdin.on('error', rejectInput);
   });
 }
 
 export function formatAjvErrors(errors) {
   return (errors ?? []).map((error) => {
-    const instancePath = error.instancePath || "/";
+    const instancePath = error.instancePath || '/';
     const suffix = error.params?.missingProperty
       ? ` (${error.params.missingProperty})`
       : error.params?.additionalProperty
         ? ` (${error.params.additionalProperty})`
-        : "";
+        : '';
     return `${instancePath} ${error.message}${suffix}`.trim();
   });
 }
@@ -43,7 +43,7 @@ async function main() {
       JSON.stringify(
         {
           ok: false,
-          errors: ["Missing required argument: --schema <path>."],
+          errors: ['Missing required argument: --schema <path>.'],
         },
         null,
         2,
@@ -58,7 +58,7 @@ async function main() {
         {
           ok: false,
           errors: [
-            "Provide exactly one input source: --json <path> or --stdin.",
+            'Provide exactly one input source: --json <path> or --stdin.',
           ],
         },
         null,
@@ -70,7 +70,7 @@ async function main() {
 
   let rawJson;
   try {
-    rawJson = useStdin ? await readStdin() : readFileSync(jsonPath, "utf8");
+    rawJson = useStdin ? await readStdin() : readFileSync(jsonPath, 'utf8');
   } catch (error) {
     console.log(
       JSON.stringify(
@@ -104,7 +104,7 @@ async function main() {
 
   let schema;
   try {
-    schema = JSON.parse(readFileSync(schemaPath, "utf8"));
+    schema = JSON.parse(readFileSync(schemaPath, 'utf8'));
   } catch (error) {
     console.log(
       JSON.stringify(
