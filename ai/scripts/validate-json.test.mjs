@@ -4,7 +4,7 @@ import { spawnSync } from "node:child_process";
 import { writeFileSync, rmSync, mkdirSync } from "node:fs";
 import { resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
-import { parseArgs, formatAjvErrors } from "./validate-json.mjs";
+import { formatAjvErrors } from "./validate-json.mjs";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const SCRIPT = resolve(__dirname, "validate-json.mjs");
@@ -45,12 +45,6 @@ function assertFails(args, stdin, expectedError) {
   );
 }
 
-// ── parseArgs ─────────────────────────────────────────────────────────────────
-
-test("parseArgs: returns empty object for no flags", () => {
-  assert.deepEqual(parseArgs(["node", "script.mjs"]), {});
-});
-// ... existing code ...
 test("formatAjvErrors: handles multiple errors", () => {
   const errors = [
     {

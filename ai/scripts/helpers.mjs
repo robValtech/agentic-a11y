@@ -1,5 +1,8 @@
 #!/usr/bin/env node
 
+// ---------------------------------------------------------------------------
+// CLI argument parsing
+// ---------------------------------------------------------------------------
 export function parseArgs(argv = []) {
   const args = {};
   for (let index = 2; index < argv.length; index++) {
