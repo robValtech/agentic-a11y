@@ -22,6 +22,7 @@
 import { readFileSync, writeFileSync, mkdirSync, copyFileSync } from 'node:fs';
 import { resolve, join, basename } from 'node:path';
 import { execSync } from 'node:child_process';
+import { parseArgs, assertArg } from './helpers.mjs';
 
 // ---------------------------------------------------------------------------
 // WCAG SC → Understanding slug lookup table (WCAG 2.2)
@@ -128,32 +129,12 @@ const ISSUE_PREFIX = {
 };
 
 // ---------------------------------------------------------------------------
-// CLI argument parsing
-// ---------------------------------------------------------------------------
-function parseArgs(argv) {
-  const args = {};
-  for (let i = 2; i < argv.length; i++) {
-    if (argv[i].startsWith('--')) {
-      const key = argv[i].slice(2);
-      args[key] = argv[i + 1] ?? '';
-      i++;
-    }
-  }
-  return args;
-}
-
-function assertArg(args, name) {
-  if (!args[name]) {
-    console.error(`Error: missing required argument --${name}`);
-    process.exit(1);
-  }
-}
-
-// ---------------------------------------------------------------------------
 // Image utilities
 // ---------------------------------------------------------------------------
 function getImageDimensions(imagePath) {
-  const result = execSync(`sips -g pixelWidth -g pixelHeight "${imagePath}"`).toString();
+  const result = execSync(
+    `sips -g pixelWidth -g pixelHeight "${imagePath}"`,
+  ).toString();
   const width = parseInt(result.match(/pixelWidth:\s*(\d+)/)?.[1], 10);
   const height = parseInt(result.match(/pixelHeight:\s*(\d+)/)?.[1], 10);
   if (!width || !height) {
@@ -163,7 +144,9 @@ function getImageDimensions(imagePath) {
 }
 
 function convertToJpeg(sourcePath, outputPath) {
-  execSync(`sips --setProperty format jpeg "${sourcePath}" --out "${outputPath}"`);
+  execSync(
+    `sips --setProperty format jpeg "${sourcePath}" --out "${outputPath}"`,
+  );
 }
 
 function normaliseIssueData(analysis) {
@@ -183,7 +166,8 @@ function normaliseIssueData(analysis) {
     const match = /^([CHM])(\d+)$/.exec(item.issueId);
     if (!match) continue;
 
-    const sev = match[1] === 'C' ? 'critical' : match[1] === 'H' ? 'high' : 'medium';
+    const sev =
+      match[1] === 'C' ? 'critical' : match[1] === 'H' ? 'high' : 'medium';
     const current = Number.parseInt(match[2], 10);
     issueCounters[sev] = Math.max(issueCounters[sev], current);
   }
@@ -235,7 +219,7 @@ function buildBubbles(analysis) {
           `            style="left: ${left}; top: ${top};"\n` +
           `            aria-label="${escapeHtml(displayLabel)} (${issueId})"\n` +
           `            >${issueId}</a\n` +
-          `          >`
+          `          >`,
       );
     } else {
       const code = nextNeutral();
@@ -245,7 +229,7 @@ function buildBubbles(analysis) {
           `            style="left: ${left}; top: ${top};"\n` +
           `            aria-label="${escapeHtml(displayLabel)} (${code})"\n` +
           `            >${code}</span\n` +
-          `          >`
+          `          >`,
       );
     }
   }
@@ -256,7 +240,8 @@ function buildBubbles(analysis) {
   // If the element has an issue, use a severity-coloured bubble labelled with
   // the issue ID (e.g. M1) so the design overlay is consistent with the table.
   for (const item of analysis.elements ?? []) {
-    const { position, label, name, elementId, issue, issueId, severity } = item;
+    const { boundingBox, label, name, elementId, issue, issueId, severity } =
+      item;
     const displayLabel = label ?? name ?? '';
 
     if (issue && issueId) {
@@ -264,20 +249,20 @@ function buildBubbles(analysis) {
         `          <a\n` +
           `            href="#element-${elementId}"\n` +
           `            class="bubble bubble--${severity}"\n` +
-          `            style="left: ${position.x}%; top: ${position.y}%;"\n` +
+          `            style="left: ${boundingBox.x}%; top: ${boundingBox.y}%;"\n` +
           `            aria-label="${escapeHtml(displayLabel)} (${issueId})"\n` +
           `            >${issueId}</a\n` +
-          `          >`
+          `          >`,
       );
     } else {
       lines.push(
         `          <a\n` +
           `            href="#element-${elementId}"\n` +
           `            class="bubble bubble--neutral"\n` +
-          `            style="left: ${position.x}%; top: ${position.y}%;"\n` +
+          `            style="left: ${boundingBox.x}%; top: ${boundingBox.y}%;"\n` +
           `            aria-label="${escapeHtml(displayLabel)} (${elementId})"\n` +
           `            >${elementId}</a\n` +
-          `          >`
+          `          >`,
       );
     }
   }
@@ -302,7 +287,8 @@ function buildElementsPanel(analysis) {
 
   const rows = elements
     .map((el) => {
-      const { elementId, tag, name, description, issue, issueId, severity } = el;
+      const { elementId, tag, name, description, issue, issueId, severity } =
+        el;
       const issueBubble = issue
         ? `<a href="#issue-${issueId}" class="bubble bubble--${severity}" aria-label="Related issue ${issueId}">${issueId}</a>`
         : '<span aria-hidden="true">-</span>';
@@ -392,7 +378,7 @@ function buildExecutiveSummary(analysis) {
   }
 
   const parts = ORDER.filter((sev) => (severityCounts[sev] ?? 0) > 0).map(
-    (sev) => `${severityCounts[sev]} ${sev}`
+    (sev) => `${severityCounts[sev]} ${sev}`,
   );
 
   let countPara = '';
@@ -456,7 +442,8 @@ function buildIssueCard(item) {
       const href = slug
         ? `https://www.w3.org/WAI/WCAG22/Understanding/${slug}`
         : `https://www.w3.org/WAI/WCAG22/Understanding/`;
-      const comma = i < wcagScs.length - 1 ? `<span aria-hidden="true">,</span>` : '';
+      const comma =
+        i < wcagScs.length - 1 ? `<span aria-hidden="true">,</span>` : '';
       return (
         `            <li>\n` +
         `              <a\n` +
@@ -519,7 +506,8 @@ function buildMetaPanel(analysis) {
 
   const totalElements = (analysis.elements ?? []).length;
   const totalIssues =
-    (analysis.elements ?? []).filter((el) => el.issue).length + (analysis.flags ?? []).length;
+    (analysis.elements ?? []).filter((el) => el.issue).length +
+    (analysis.flags ?? []).length;
 
   const items = [
     ['Date', escapeHtml(date)],
@@ -532,7 +520,10 @@ function buildMetaPanel(analysis) {
   ];
 
   const listItems = items
-    .map(([label, value]) => `          <li><strong>${label}:</strong> ${value}</li>`)
+    .map(
+      ([label, value]) =>
+        `          <li><strong>${label}:</strong> ${value}</li>`,
+    )
     .join('\n');
 
   return (
@@ -570,8 +561,8 @@ const imagePath = resolve(args['image']);
 const outputDir = resolve(args['output']);
 const templateDir = resolve(args['template-dir']);
 
-const htmlTemplatePath = join(templateDir, 'a11y-design-review-report.template.html');
-const cssTemplatePath = join(templateDir, 'a11y-design-review-report.template.css');
+const htmlTemplatePath = join(templateDir, 'report.template.html');
+const cssTemplatePath = join(templateDir, 'report.template.css');
 
 // Read inputs
 const analysis = JSON.parse(readFileSync(jsonPath, 'utf8'));
@@ -619,4 +610,10 @@ writeFileSync(cssOutPath, cssTemplate, 'utf8');
 convertToJpeg(imagePath, imageOutPath);
 
 // Confirm
-console.log(JSON.stringify({ html: htmlOutPath, css: cssOutPath, image: imageOutPath }, null, 2));
+console.log(
+  JSON.stringify(
+    { html: htmlOutPath, css: cssOutPath, image: imageOutPath },
+    null,
+    2,
+  ),
+);
