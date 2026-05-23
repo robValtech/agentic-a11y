@@ -1,0 +1,48 @@
+{
+  "autorun": true,
+  "autokill": true,
+  "terminals": [
+    {
+      "name": "Git",
+      "description": "Version control",
+      "icon": "octoface",
+      "color": "terminal.ansiBrightYellow",
+
+      "cwd": "",
+      "commands": ["gst"],
+      "execute": false,
+
+      "persistent": "da11yrev-git",
+      "focus": true,
+      "open": true
+    },
+    {
+      "name": "Test",
+      "description": "Node script unit tests",
+      "icon": "test-view-icon",
+      "color": "terminal.ansiMagenta",
+
+      "cwd": "",
+      "commands": ["npm run test:scripts", "npm run test:scripts:coverage"],
+      "execute": false,
+
+      "persistent": "da11yrev-test",
+      "focus": true,
+      "open": true
+    },
+    {
+      "name": "CLI",
+      "description": "Terminal for fun",
+      "icon": "terminal-view-icon",
+      "color": "terminal.ansiBrightRed",
+
+      "cwd": "",
+      "commands": [],
+      "execute": false,
+
+      "persistent": "da11yrev-cli",
+      "focus": true,
+      "open": true
+    }
+  ]
+}
