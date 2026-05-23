@@ -1,0 +1,20 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "required": [
+    "version",
+    "greeting"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "version": {
+      "type": "string",
+      "const": "1.0.0",
+      "description": "Schema version. Must match the expected contract version to ensure compatibility with validation and processing logic."
+    },
+    "greeting": {
+      "type": "string",
+      "description": "A friendly greeting."
+    }
+  }
+}

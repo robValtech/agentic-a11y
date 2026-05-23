@@ -3,8 +3,9 @@
 import Ajv from "ajv";
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
+import { fileURLToPath } from "node:url";
 
-function parseArgs(argv) {
+export function parseArgs(argv) {
   const args = {};
   for (let index = 2; index < argv.length; index++) {
     const value = argv[index];
@@ -36,7 +37,7 @@ function readStdin() {
   });
 }
 
-function formatAjvErrors(errors) {
+export function formatAjvErrors(errors) {
   return (errors ?? []).map((error) => {
     const instancePath = error.instancePath || "/";
     const suffix = error.params?.missingProperty
@@ -164,16 +165,18 @@ async function main() {
   );
 }
 
-main().catch((error) => {
-  console.log(
-    JSON.stringify(
-      {
-        ok: false,
-        errors: [error.message],
-      },
-      null,
-      2,
-    ),
-  );
-  process.exit(1);
-});
+if (process.argv[1] === fileURLToPath(import.meta.url)) {
+  main().catch((error) => {
+    console.log(
+      JSON.stringify(
+        {
+          ok: false,
+          errors: [error.message],
+        },
+        null,
+        2,
+      ),
+    );
+    process.exit(1);
+  });
+}
