@@ -3,9 +3,8 @@
   "private": true,
   "scripts": {
     "test:scripts": "node --test 'ai/**/*.test.mjs'",
-    "test:scripts:coverage": "node --test --experimental-test-coverage 'ai/**/*.test.mjs'",
-    "validate:json": "node scripts/validate-json.mjs",
-    "validate:a11y-analysis": "node scripts/validate-json.mjs --schema .github/templates/a11y-design-review/a11y-analysis-result.schema.json"
+    "test:scripts:coverage": "npm run test:scripts -- --experimental-test-coverage",
+    "validate:analysis-json": "node ai/scripts/validate-json.mjs --schema ai/schemas/a11y.analyst.schema.json"
   },
   "dependencies": {
     "ajv": "^8.17.1"

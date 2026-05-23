@@ -99,3 +99,25 @@ We will keep the image analyst agent and the orchestrator agent. The analyst's r
 - final validation
 
 We'll create this update in a new branch and continue iterating until I am happy with the results.
+
+---
+
+## NPM Scripts
+
+**Validate analysis JSON:**
+
+```bash
+npm run validate:analysis-json -- --json analysis.json
+```
+
+**Run unit tests:**
+
+```bash
+npm run test:scripts
+```
+
+**Run unit tests with coverage report:**
+
+```bash
+npm run test:scripts:coverage
+```
