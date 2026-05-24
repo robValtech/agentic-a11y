@@ -16,6 +16,8 @@
   --color-accent: #b3ff60;
   --color-accent-hover: #caff94;
   --color-heading: #f0f3ff;
+  --color-focus-ring-inner: #fff;
+  --color-focus-ring-outer: #000;
 
   --severity-critical-bg: #ff2525;
   --severity-critical-border: #d40808;
@@ -41,6 +43,7 @@
     sans-serif;
   --font-mono: "SF Mono", "Fira Code", "Cascadia Code", Consolas, monospace;
 
+  --radius-xs: 2px;
   --radius-sm: 4px;
   --radius-md: 8px;
   --radius-lg: 12px;
@@ -67,6 +70,8 @@
     --color-accent: #ff3b63;
     --color-accent-hover: #ea4773;
     --color-heading: #0d1020;
+    --color-focus-ring-inner: #0d0f1a;
+    --color-focus-ring-outer: #dde1f0;
 
     --severity-critical-label: #cc0000;
     --severity-high-label: #c45f00;
@@ -170,7 +175,7 @@ body {
   text-decoration: none;
 }
 
-.skip-link:focus {
+.skip-link:focus-visible {
   top: var(--space-md);
 }
 
@@ -314,11 +319,6 @@ main {
   color: var(--color-bg);
 }
 
-.markers-toggle:focus-visible {
-  outline: 2px solid var(--color-accent);
-  outline-offset: 2px;
-}
-
 /* Eye icons inside toggle buttons — show/hide based on aria-pressed */
 .toggle-icon {
   flex-shrink: 0;
@@ -403,8 +403,7 @@ a.bubble:hover {
 }
 
 a.bubble:focus-visible {
-  outline: 2px solid var(--color-accent);
-  outline-offset: 3px;
+  border-radius: 50%;
 }
 
 /* --- Elements table --- */
@@ -477,7 +476,7 @@ a.bubble:focus-visible {
 }
 
 .elements-table .bubble {
-  position: static;
+  position: relative;
   transform: none;
   cursor: default;
   flex-shrink: 0;
@@ -500,6 +499,7 @@ a.bubble:focus-visible {
 .sort-btn {
   background: none;
   border: none;
+  border-radius: var(--radius-xs);
   padding: 0;
   margin: 0;
   cursor: pointer;
@@ -519,9 +519,7 @@ a.bubble:focus-visible {
 }
 
 .sort-btn:focus-visible {
-  outline: 2px solid var(--color-accent);
-  outline-offset: 2px;
-  border-radius: var(--radius-sm);
+  /* border-radius: var(--radius-sm); */
 }
 
 .sort-icon::after {
@@ -638,6 +636,7 @@ th[aria-sort="descending"] .sort-icon::after {
   font-size: 12px;
   color: var(--color-accent);
   text-decoration: none;
+  border-radius: var(--radius-xs);
 }
 
 .issue-card__wcag a:hover {
@@ -727,11 +726,6 @@ th[aria-sort="descending"] .sort-icon::after {
   color: var(--color-heading);
 }
 
-.theme-toggle:focus-visible {
-  outline: 2px solid var(--color-accent);
-  outline-offset: 3px;
-}
-
 /* Sun shown in dark mode (click to go light); moon shown in light mode (click to go dark) */
 .theme-toggle__icon--sun {
   display: block;
@@ -809,5 +803,46 @@ th[aria-sort="descending"] .sort-icon::after {
 
   .section__heading {
     font-size: 18px;
+  }
+}
+
+/* --- Visible keyboard focus indicator --- */
+a,
+button {
+  position: relative;
+
+  &::after {
+    content: "";
+    display: block;
+    position: absolute;
+    inset: -2px;
+  }
+}
+
+a:focus,
+button:focus {
+  outline: none;
+
+  &::after {
+    border-radius: inherit;
+    box-shadow: 0 0 0 2px var(--color-focus-ring-inner);
+    outline-offset: 2px;
+    outline: 2px solid var(--color-focus-ring-outer);
+  }
+}
+
+a:focus:not(:focus-visible),
+button:focus:not(:focus-visible) {
+  outline: none;
+  box-shadow: none;
+}
+
+a:focus-visible,
+button:focus-visible {
+  &::after {
+    border-radius: inherit;
+    box-shadow: 0 0 0 2px var(--color-focus-ring-inner);
+    outline-offset: 2px;
+    outline: 2px solid var(--color-focus-ring-outer);
   }
 }
