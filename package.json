@@ -2,7 +2,8 @@
   "name": "agentic-a11y",
   "private": true,
   "scripts": {
-    "test:scripts": "node --test 'ai/**/*.test.mjs'",
+    "test:scripts": "node --test 'ai/scripts/*.test.mjs'",
+    "test:scripts:watch": "node --test --watch 'ai/scripts/*.test.mjs'",
     "test:scripts:coverage": "npm run test:scripts -- --experimental-test-coverage",
     "validate:analysis-json": "node ai/scripts/validate-json.mjs --schema ai/schemas/a11y.analyst.schema.json",
     "make:report": "node ai/scripts/generate-report.mjs --json temp/report/input/analysis.json --image temp/report/input/design.jpg --output temp/report/output --template-dir ai/templates"
