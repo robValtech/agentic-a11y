@@ -15,9 +15,9 @@ Store the user's prompt as `userPrompt`.
 ### Run this script
 
 ```bash
-  TS_START=$(node -e "console.log(Date.now())") && \
+  TS_START=$(node ai/scripts/get-timestamp.mjs) && \
   echo START TIMESTAMP:  $TS_START && \
-  TS_FOLDER=$(node -e "console.log(new Date())") && \
+  TS_FOLDER=$(node ai/scripts/get-timestamp.mjs) && \
   TS_FOLDER_FROM_SCRIPT=$(node "ai/scripts/get-formatted-datetime.mjs") && \
   echo FOLDER TIMESTAMP: $TS_FOLDER
 ```
