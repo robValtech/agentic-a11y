@@ -54,6 +54,8 @@
   --space-lg: 24px;
   --space-xl: 40px;
   --space-2xl: 64px;
+
+  --max-content-width: 1400px;
 }
 
 /* --- Light theme override (system preference) --- */
@@ -129,6 +131,11 @@ figure {
   margin: 0;
 }
 
+a {
+  border-radius: var(--radius-sm);
+  color: var(--color-text);
+}
+
 @media (prefers-reduced-motion: no-preference) {
   html {
     scroll-behavior: smooth;
@@ -187,7 +194,7 @@ body {
 }
 
 .page-header__inner {
-  max-width: 1400px;
+  max-width: var(--max-content-width);
   margin: 0 auto;
   display: flex;
   align-items: center;
@@ -220,9 +227,35 @@ body {
   text-overflow: ellipsis;
 }
 
+/* --- Page footer --- */
+.page-footer {
+  background-color: var(--color-surface);
+  border-top: 1px solid var(--color-border);
+  padding: var(--space-md) var(--space-xl);
+}
+
+.page-footer__inner {
+  max-width: var(--max-content-width);
+  margin: 0 auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.page-footer__text-block:not(:last-child) {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+}
+
+.page-footer__valtech-logo {
+  width: 73px;
+}
+
 /* --- Main layout --- */
 main {
-  max-width: 1400px;
+  max-width: var(--max-content-width);
   margin: 0 auto;
   padding: var(--space-xl) var(--space-xl) var(--space-2xl);
 }
