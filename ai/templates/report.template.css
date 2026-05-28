@@ -149,9 +149,11 @@ a {
   p,
   ul,
   ol,
-  dl {
+  dl,
+  table {
+    max-width: var(--max-text-content-width);
+
     &:not(:last-child) {
-      max-width: var(--max-text-content-width);
       margin-bottom: var(--space-md);
     }
   }
@@ -173,10 +175,6 @@ body {
 }
 
 /* Details blocks */
-details {
-  padding-bottom: var(--space-md);
-  /* border-bottom: 1px solid var(--color-text); */
-}
 summary {
   position: relative;
   width: 100%;
@@ -345,7 +343,26 @@ main {
 
 /* --- Sections --- */
 .section {
-  margin-bottom: var(--space-2xl);
+  padding-bottom: var(--space-xl);
+  margin-bottom: var(--space-xl);
+  border-bottom: 1px solid var(--color-text-muted);
+
+  & > .section {
+    margin-bottom: var(--space-xl);
+    padding-bottom: var(--space-sm);
+    border: none;
+  }
+
+  & > .section:last-child {
+    margin-bottom: 0;
+
+    padding-bottom: 0;
+  }
+
+  &:last-child {
+    padding-bottom: 0;
+    border: none;
+  }
 }
 
 .section--collapsible {
@@ -610,6 +627,10 @@ a.bubble:focus-visible {
 .elements-table a.bubble:hover {
   transform: none;
   box-shadow: 0 2px 8px rgb(0 0 0 / 35%);
+}
+
+.table--meta {
+  width: 320px;
 }
 
 /* Sort buttons inside sortable column headers */

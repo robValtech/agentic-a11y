@@ -190,6 +190,7 @@
       <details
         class="section easy-read-content"
         aria-labelledby="elements-section-heading"
+        open
       >
         <summary>
           <h2 id="elements-section-heading" class="summary-target">
@@ -290,6 +291,7 @@
       <details
         class="section easy-read-content"
         aria-labelledby="a11y-issues-section-heading"
+        open
       >
         <summary>
           <h2 id="a11y-issues-section-heading" class="summary-target">
@@ -304,7 +306,7 @@
           <h3 id="issues-section-heading">
             High Confidence Accessibility Issues
           </h3>
-          {{CONFIDENT_ISSUES}}
+          <div>{{HIGH_CONFIDENCE_ISSUES}}</div>
         </section>
 
         <section
@@ -314,13 +316,19 @@
           <h3 id="flagged-issues-section-heading">
             Possible Accessibility Issues
           </h3>
-          {{FLAGGED_ISSUES}}
+          <p>
+            Manual review is recommended to make sure the following
+            low-confidence issues flagged by the analyst are either further
+            investigated or marked as false positives.
+          </p>
+          <div>{{FLAGGED_ISSUES}}</div>
         </section>
       </details>
 
       <details
         class="section section--collapsible easy-read-content"
         id="page-section--about"
+        open
       >
         <summary>
           <h2 class="summary-target">About this report</h2>
@@ -381,7 +389,7 @@
 
         <h3>Report Metadata</h3>
         <table
-          class="elements-table"
+          class="elements-table table--meta"
           id="metadata-table"
           aria-label="Report Metadata"
         >
