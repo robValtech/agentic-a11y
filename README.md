@@ -1,5 +1,9 @@
 # Agentic Accessibility Tools
 
+**Author:** [Rob Pataki](<mailto:rob.pataki@valtech.com?subject=agentic a11y tools>)
+
+**Last updated:** 28/05/2026
+
 ## A11y Design Review Agent POC
 
 POC project exploring agentic image analysis based accessibility reviews.
