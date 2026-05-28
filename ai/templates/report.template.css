@@ -56,6 +56,10 @@
   --space-2xl: 64px;
 
   --max-content-width: 1400px;
+  --max-text-content-width: 800px;
+
+  --tr-easing: ease;
+  --tr-duration: 0.15s;
 }
 
 /* --- Light theme override (system preference) --- */
@@ -136,6 +140,23 @@ a {
   color: var(--color-text);
 }
 
+.easy-read-content {
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  p,
+  ul,
+  ol,
+  dl {
+    &:not(:last-child) {
+      max-width: var(--max-text-content-width);
+      margin-bottom: var(--space-md);
+    }
+  }
+}
+
 @media (prefers-reduced-motion: no-preference) {
   html {
     scroll-behavior: smooth;
@@ -146,9 +167,70 @@ body {
   background-color: var(--color-bg);
   color: var(--color-text);
   font-family: var(--font-sans);
-  font-size: 15px;
+  font-size: 16px;
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
+}
+
+/* Details blocks */
+details {
+  padding-bottom: var(--space-md);
+  border-bottom: 1px solid var(--color-text);
+}
+summary {
+  position: relative;
+  width: 100%;
+  display: block;
+  anchor-name: --summary;
+
+  &::marker {
+    content: "";
+  }
+
+  &::before,
+  &::after {
+    content: "";
+    border-block-start: 3px solid var(--color-text);
+    height: 0;
+    width: 1rem;
+
+    inset-block-start: 50%;
+    inset-inline-end: 0;
+
+    position: absolute;
+    position-anchor: --summary;
+    position-area: top end;
+    transform-origin: 50%;
+
+    @media (prefers-reduced-motion: no-preference) {
+      transition: transform var(--tr-duration) ease;
+    }
+  }
+
+  &::after {
+    transform: rotate(90deg);
+  }
+
+  & + * {
+    margin-top: 1rem;
+  }
+}
+
+/* Rotate the line when open */
+details[open] summary {
+  &::after {
+    transform: rotate(0deg);
+  }
+
+  &::before {
+    transform: rotate(180deg);
+  }
+}
+
+.summary-target {
+  position: relative;
+  padding-right: 40px;
+  border-radius: var(--radius-md);
 }
 
 /* --- Visually hidden (screen reader only) --- */
@@ -265,12 +347,12 @@ main {
   margin-bottom: var(--space-2xl);
 }
 
-.section.executive-summary {
-  font-size: 16px;
+.section--collapsible {
+  margin-bottom: var(--space-lg);
 }
 
-.section.executive-summary > p {
-  max-width: 800px;
+.section.executive-summary {
+  font-size: 16px;
 }
 
 .section.executive-summary > p:not(:last-child) {
@@ -342,8 +424,8 @@ main {
   border-radius: var(--radius-sm);
   cursor: pointer;
   transition:
-    background 0.15s ease,
-    color 0.15s ease;
+    background var(--tr-duration) ease,
+    color var(--tr-duration) ease;
   flex-shrink: 0;
 }
 
@@ -426,8 +508,8 @@ main {
   text-decoration: none;
   z-index: 10;
   transition:
-    transform 0.15s ease,
-    box-shadow 0.15s ease;
+    transform var(--tr-duration) ease,
+    box-shadow var(--tr-duration) ease;
 }
 
 a.bubble:hover {
@@ -749,9 +831,9 @@ th[aria-sort="descending"] .sort-icon::after {
   cursor: pointer;
   flex-shrink: 0;
   transition:
-    background-color 0.15s ease,
-    border-color 0.15s ease,
-    color 0.15s ease;
+    background-color var(--tr-duration) ease,
+    border-color var(--tr-duration) ease,
+    color var(--tr-duration) ease;
 }
 
 .theme-toggle:hover {
@@ -829,8 +911,8 @@ th[aria-sort="descending"] .sort-icon::after {
   }
 
   .page-header__title-group {
-    flex-direction: column;
-    align-items: flex-start;
+    display: flex;
+    align-items: center;
     gap: var(--space-xs);
   }
 
@@ -841,7 +923,8 @@ th[aria-sort="descending"] .sort-icon::after {
 
 /* --- Visible keyboard focus indicator --- */
 a,
-button {
+button,
+.summary-target {
   position: relative;
 
   &::after {
@@ -852,8 +935,13 @@ button {
   }
 }
 
+summary:focus {
+  outline: none;
+}
+
 a:focus,
-button:focus {
+button:focus,
+summary:focus .summary-target {
   outline: none;
 
   &::after {
@@ -865,13 +953,15 @@ button:focus {
 }
 
 a:focus:not(:focus-visible),
-button:focus:not(:focus-visible) {
+button:focus:not(:focus-visible),
+summary:focus:not(:focus-visible) .summary-target {
   outline: none;
   box-shadow: none;
 }
 
 a:focus-visible,
-button:focus-visible {
+button:focus-visible,
+summary:focus-visible .summary-target {
   &::after {
     border-radius: inherit;
     box-shadow: 0 0 0 2px var(--color-focus-ring-inner);

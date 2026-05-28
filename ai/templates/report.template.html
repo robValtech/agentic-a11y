@@ -12,10 +12,10 @@
 
     <header class="page-header" aria-label="Site header">
       <div class="page-header__inner">
-        <div class="page-header__title-group">
-          <span class="page-header__label">Accessibility Review</span>
-          <h1 class="page-header__title">{{FILENAME}}</h1>
-        </div>
+        <h1 class="page-header__title-group">
+          <span class="page-header__label">Accessibility Review</span
+          ><span class="page-header__title">{{FILENAME}}</span>
+        </h1>
         <button
           class="theme-toggle"
           id="theme-toggle"
@@ -74,6 +74,112 @@
     </header>
 
     <main id="main-content" aria-label="Accessibility review report">
+      <details
+        class="section section--collapsible easy-read-content"
+        id="page-section--about"
+      >
+        <summary>
+          <h2 class="summary-target">About this report</h2>
+        </summary>
+        <h3>What this report IS</h3>
+        <p>a</p>
+
+        <h3>What this report IS NOT</h3>
+
+        <h3>Who should use this report?</h3>
+        <p>
+          <strong>Designers</strong> can use this report during the exploratory
+          design phase to understand how to structure and label the content
+          blocks of their web page.
+        </p>
+        <p>
+          <strong>Engineers</strong> can use this report during development to
+          make sure the page is structured and labelled well and the components
+          are built using
+          <a href="https://www.w3.org/WAI/WCAG22/Understanding" target="_blank"
+            >WCAG <span class="sr-only">(opens in a new tab)</span></a
+          >
+          best practices and
+          <a href="https://www.w3.org/WAI/ARIA/apg/" target="_blank"
+            >WAI-ARIA APG <span class="sr-only">(opens in a new tab)</span></a
+          >.
+        </p>
+
+        <ul>
+          <li>structure and semantics</li>
+          <li>Messaging</li>
+          <li>colour contrast issues</li>
+          <li>recommended accessible names and ARIA roles</li>
+        </ul>
+
+        <h3>How was this report created?</h3>
+        <p>
+          The insights in this report are based on an image-based visual
+          analysis carried out by an LLM.
+        </p>
+        <p>
+          Despite strict guard rails, output validation and quality checks used
+          during the analysis process and the generation of this report, there
+          can be inaccurately reported issues or misdiagnosed elements.
+        </p>
+        <p>
+          Issues where the LLM suspects a potential issue but the level of
+          confidence is relatively low are only flagged for manual review.
+        </p>
+        <p>
+          The review was based on a single screenshot or design image file,
+          therefore it is limited to what the LLM could "see" on the design.
+        </p>
+        <p>
+          Always check your designs and websites using manual testing methods
+          and never skip user testing.
+        </p>
+
+        <h3>Report Metadata</h3>
+        <table
+          class="elements-table"
+          id="metadata-table"
+          aria-label="Report Metadata"
+        >
+          <thead>
+            <tr>
+              <th scope="col">ID</th>
+              <th scope="col">Value</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Date</strong></td>
+              <td>{{METADATA_DATE}}</td>
+            </tr>
+            <tr>
+              <td><strong>Filename</strong></td>
+              <td>{{METADATA_FILE_NAME}}</td>
+            </tr>
+            <tr>
+              <td><strong>Analyst</strong></td>
+              <td>{{METADATA_ANALYST}}</td>
+            </tr>
+            <tr>
+              <td><strong>Prompt</strong></td>
+              <td>{{METADATA_PROMPT}}</td>
+            </tr>
+            <tr>
+              <td><strong>Runtime</strong></td>
+              <td>{{METADATA_RUNTIME}}</td>
+            </tr>
+            <tr>
+              <td><strong>Total elements</strong></td>
+              <td>{{METADATA_TOTAL_ELEMENTS}}</td>
+            </tr>
+            <tr>
+              <td><strong>Total issues</strong></td>
+              <td>{{METADATA_TOTAL_ISSUES}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </details>
+
       <!-- EXECUTIVE SUMMARY PLACEHOLDER — replace with generated executive summary section -->
       {{EXECUTIVE_SUMMARY}}
 
@@ -185,9 +291,6 @@
 
       <!-- ISSUES PANEL PLACEHOLDER — replace with generated issues panel section -->
       {{ISSUES_PANEL}}
-
-      <!-- META PANEL PLACEHOLDER — replace with generated meta section -->
-      {{META_PANEL}}
     </main>
 
     <footer class="page-footer">
@@ -232,7 +335,10 @@
               </g>
             </svg>
           </a>
-          <span>with ❤️.</span>
+          <span
+            >with <span aria-hidden="true">💙</span
+            ><span class="sr-only">love</span>.</span
+          >
         </p>
         <span class="page-footer__text-block"
           ><a
