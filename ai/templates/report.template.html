@@ -74,6 +74,250 @@
     </header>
 
     <main id="main-content" aria-label="Accessibility review report">
+      <section
+        class="section easy-read-content"
+        aria-labelledby="summary-section-heading"
+      >
+        <h2 id="summary-section-heading">Report Summary</h2>
+        {{EXECUTIVE_SUMMARY}}
+      </section>
+
+      <details
+        class="section easy-read-content"
+        aria-labelledby="design-section-heading"
+        open
+      >
+        <summary>
+          <h2 id="design-section-heading" class="summary-target">Design</h2>
+        </summary>
+
+        <ul class="legend" aria-label="Bubble legend">
+          <li class="legend__item">
+            <span class="bubble bubble--neutral" aria-hidden="true">E</span>
+            Element marker
+          </li>
+          <li class="legend__item">
+            <span class="bubble bubble--critical" aria-hidden="true">C</span>
+            Critical issue
+          </li>
+          <li class="legend__item">
+            <span class="bubble bubble--high" aria-hidden="true">H</span>
+            High severity issue
+          </li>
+          <li class="legend__item">
+            <span class="bubble bubble--medium" aria-hidden="true">M</span>
+            Medium severity issue
+          </li>
+          <li class="legend__item legend__item--toggle">
+            <button
+              class="markers-toggle"
+              id="markers-toggle"
+              type="button"
+              aria-pressed="true"
+              aria-controls="design-figure"
+            >
+              <!-- Eye-open icon: shown when markers are visible (aria-pressed=true) -->
+              <svg
+                class="toggle-icon toggle-icon--visible"
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+                focusable="false"
+              >
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                <circle cx="12" cy="12" r="3" />
+              </svg>
+              <!-- Eye-closed icon: shown when markers are hidden (aria-pressed=false) -->
+              <svg
+                class="toggle-icon toggle-icon--hidden"
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+                focusable="false"
+              >
+                <path
+                  d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"
+                />
+                <path
+                  d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"
+                />
+                <line x1="1" y1="1" x2="23" y2="23" />
+              </svg>
+              <span class="toggle-label">Hide markers</span>
+            </button>
+          </li>
+        </ul>
+
+        <!-- Design with overlaid bubbles -->
+        <figure
+          class="design-container"
+          id="design-figure"
+          style="padding-top: {{ASPECT_RATIO}};"
+        >
+          <figcaption class="sr-only">
+            Annotated design screenshot of {{FILENAME}} with accessibility
+            markers. Numbered bubbles indicate reviewed elements;
+          </figcaption>
+          <div
+            class="design-image"
+            role="presentation"
+            aria-hidden="true"
+            style="background-image: url(&quot;design.jpg&quot;)"
+          ></div>
+
+          <!-- BUBBLES PLACEHOLDER — replace with one element per detected item -->
+          <!-- Neutral (no linked issue):
+             <span class="bubble bubble--neutral" style="left: X%; top: Y%;" aria-label="LABEL (N1)">N1</span>
+             Issue bubble (links to report):
+             <a href="#issue-C1" class="bubble bubble--critical" style="left: X%; top: Y%;" aria-label="LABEL (C1)">C1</a>
+             Text inside bubble = full severity code (C1, H1, M1, N1, …) so severity is communicated by both colour and text. -->
+          {{BUBBLES}}
+        </figure>
+      </details>
+
+      <details
+        class="section easy-read-content"
+        aria-labelledby="elements-section-heading"
+      >
+        <summary>
+          <h2 id="elements-section-heading" class="summary-target">
+            UI Elements
+          </h2>
+        </summary>
+
+        <section
+          class="section easy-read-content"
+          aria-labelledby="landmarks-section-heading"
+        >
+          <h3 id="landmarks-section-heading">Landmarks</h3>
+          <table
+            class="elements-table"
+            id="landmarks-table"
+            aria-label="Landmarks"
+          >
+            <thead>
+              <tr>
+                <th scope="col" data-sort-col="id" aria-sort="none">
+                  <button
+                    type="button"
+                    class="sort-btn"
+                    aria-label="Sort by ID"
+                  >
+                    ID <span class="sort-icon" aria-hidden="true"></span>
+                  </button>
+                </th>
+                <th scope="col" data-sort-col="tag" aria-sort="none">
+                  <button
+                    type="button"
+                    class="sort-btn"
+                    aria-label="Sort by Tag"
+                  >
+                    Role <span class="sort-icon" aria-hidden="true"></span>
+                  </button>
+                </th>
+                <th scope="col">Name</th>
+                <th scope="col">Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              {{LANDMARK_TABLE_ROWS}}
+            </tbody>
+          </table>
+        </section>
+
+        <section
+          class="section easy-read-content"
+          aria-labelledby="components-section-heading"
+        >
+          <h3 id="components-section-heading">Components</h3>
+          <table
+            class="elements-table"
+            id="components-table"
+            aria-label="Components"
+          >
+            <thead>
+              <tr>
+                <th scope="col" data-sort-col="id" aria-sort="none">
+                  <button
+                    type="button"
+                    class="sort-btn"
+                    aria-label="Sort by ID"
+                  >
+                    ID <span class="sort-icon" aria-hidden="true"></span>
+                  </button>
+                </th>
+                <th scope="col" data-sort-col="tag" aria-sort="none">
+                  <button
+                    type="button"
+                    class="sort-btn"
+                    aria-label="Sort by Tag"
+                  >
+                    Role <span class="sort-icon" aria-hidden="true"></span>
+                  </button>
+                </th>
+                <th scope="col">Name</th>
+                <th scope="col">Description</th>
+                <th scope="col" data-sort-col="issue" aria-sort="none">
+                  <button
+                    type="button"
+                    class="sort-btn"
+                    aria-label="Sort by Issue"
+                  >
+                    Issue <span class="sort-icon" aria-hidden="true"></span>
+                  </button>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {{COMPONENT_TABLE_ROWS}}
+            </tbody>
+          </table>
+        </section>
+      </details>
+
+      <details
+        class="section easy-read-content"
+        aria-labelledby="a11y-issues-section-heading"
+      >
+        <summary>
+          <h2 id="a11y-issues-section-heading" class="summary-target">
+            Accessibility Issues
+          </h2>
+        </summary>
+
+        <section
+          class="section easy-read-content"
+          aria-labelledby="issues-section-heading"
+        >
+          <h3 id="issues-section-heading">
+            High Confidence Accessibility Issues
+          </h3>
+          {{CONFIDENT_ISSUES}}
+        </section>
+
+        <section
+          class="section easy-read-content"
+          aria-labelledby="flagged-issues-section-heading"
+        >
+          <h3 id="flagged-issues-section-heading">
+            Possible Accessibility Issues
+          </h3>
+          {{FLAGGED_ISSUES}}
+        </section>
+      </details>
+
       <details
         class="section section--collapsible easy-read-content"
         id="page-section--about"
@@ -179,118 +423,6 @@
           </tbody>
         </table>
       </details>
-
-      <!-- EXECUTIVE SUMMARY PLACEHOLDER — replace with generated executive summary section -->
-      {{EXECUTIVE_SUMMARY}}
-
-      <!-- =============================================
-         SECTION 1: Annotated design
-         ============================================= -->
-      <section class="section" aria-labelledby="design-heading">
-        <h2 class="section__heading" id="design-heading">Annotated Design</h2>
-
-        <!-- Legend -->
-        <ul class="legend" aria-label="Bubble legend">
-          <li class="legend__item">
-            <span class="bubble bubble--neutral" aria-hidden="true">E</span>
-            Element marker
-          </li>
-          <li class="legend__item">
-            <span class="bubble bubble--critical" aria-hidden="true">C</span>
-            Critical issue
-          </li>
-          <li class="legend__item">
-            <span class="bubble bubble--high" aria-hidden="true">H</span>
-            High severity issue
-          </li>
-          <li class="legend__item">
-            <span class="bubble bubble--medium" aria-hidden="true">M</span>
-            Medium severity issue
-          </li>
-          <li class="legend__item legend__item--toggle">
-            <button
-              class="markers-toggle"
-              id="markers-toggle"
-              type="button"
-              aria-pressed="true"
-              aria-controls="design-figure"
-            >
-              <!-- Eye-open icon: shown when markers are visible (aria-pressed=true) -->
-              <svg
-                class="toggle-icon toggle-icon--visible"
-                width="16"
-                height="16"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                aria-hidden="true"
-                focusable="false"
-              >
-                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
-                <circle cx="12" cy="12" r="3" />
-              </svg>
-              <!-- Eye-closed icon: shown when markers are hidden (aria-pressed=false) -->
-              <svg
-                class="toggle-icon toggle-icon--hidden"
-                width="16"
-                height="16"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                aria-hidden="true"
-                focusable="false"
-              >
-                <path
-                  d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"
-                />
-                <path
-                  d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"
-                />
-                <line x1="1" y1="1" x2="23" y2="23" />
-              </svg>
-              <span class="toggle-label">Hide markers</span>
-            </button>
-          </li>
-        </ul>
-
-        <!-- Design with overlaid bubbles -->
-        <figure
-          class="design-container"
-          id="design-figure"
-          style="padding-top: {{ASPECT_RATIO}};"
-        >
-          <figcaption class="sr-only">
-            Annotated design screenshot of {{FILENAME}} with accessibility
-            markers. Numbered bubbles indicate reviewed elements;
-          </figcaption>
-          <div
-            class="design-image"
-            role="presentation"
-            aria-hidden="true"
-            style="background-image: url(&quot;design.jpg&quot;)"
-          ></div>
-
-          <!-- BUBBLES PLACEHOLDER — replace with one element per detected item -->
-          <!-- Neutral (no linked issue):
-             <span class="bubble bubble--neutral" style="left: X%; top: Y%;" aria-label="LABEL (N1)">N1</span>
-             Issue bubble (links to report):
-             <a href="#issue-C1" class="bubble bubble--critical" style="left: X%; top: Y%;" aria-label="LABEL (C1)">C1</a>
-             Text inside bubble = full severity code (C1, H1, M1, N1, …) so severity is communicated by both colour and text. -->
-          {{BUBBLES}}
-        </figure>
-      </section>
-
-      <!-- ELEMENTS PANEL PLACEHOLDER — replace with generated elements panel section -->
-      {{ELEMENTS_PANEL}}
-
-      <!-- ISSUES PANEL PLACEHOLDER — replace with generated issues panel section -->
-      {{ISSUES_PANEL}}
     </main>
 
     <footer class="page-footer">
