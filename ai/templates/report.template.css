@@ -127,8 +127,6 @@
 *::before,
 *::after {
   box-sizing: border-box;
-  margin: 0;
-  padding: 0;
 }
 
 figure {
@@ -149,13 +147,20 @@ a {
   p,
   ul,
   ol,
-  dl,
-  table {
+  dl {
     max-width: var(--max-text-content-width);
 
     &:not(:last-child) {
       margin-bottom: var(--space-md);
     }
+  }
+
+  table :not(:last-child) {
+    margin-bottom: var(--space-md);
+  }
+
+  summary > * {
+    max-width: 100%;
   }
 }
 
@@ -172,6 +177,7 @@ body {
   font-size: 16px;
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
+  margin: 0;
 }
 
 /* Details blocks */
@@ -332,6 +338,8 @@ details[open] summary {
 
 .page-footer__valtech-logo {
   width: 73px;
+  top: -1px;
+  position: relative;
 }
 
 /* --- Main layout --- */
@@ -347,6 +355,12 @@ main {
   margin-bottom: var(--space-xl);
   border-bottom: 1px solid var(--color-text-muted);
 
+  &:last-child {
+    margin-bottom: 0;
+    padding-bottom: 0;
+    border: none;
+  }
+
   & > .section {
     margin-bottom: var(--space-xl);
     padding-bottom: var(--space-sm);
@@ -355,18 +369,17 @@ main {
 
   & > .section:last-child {
     margin-bottom: 0;
-
     padding-bottom: 0;
-  }
-
-  &:last-child {
-    padding-bottom: 0;
-    border: none;
   }
 }
 
 .section--collapsible {
   margin-bottom: var(--space-lg);
+  padding-bottom: var(--space-sm);
+
+  &[open] {
+    padding-bottom: var(--space-xl);
+  }
 }
 
 .section.executive-summary {
@@ -630,7 +643,7 @@ a.bubble:focus-visible {
 }
 
 .table--meta {
-  width: 320px;
+  width: 50%;
 }
 
 /* Sort buttons inside sortable column headers */
@@ -942,6 +955,15 @@ th[aria-sort="descending"] .sort-icon::after {
   .section__heading {
     font-size: 18px;
   }
+
+  .page-footer {
+    padding: var(--space-md);
+  }
+
+  .page-footer__inner {
+    flex-direction: column;
+    gap: 0;
+  }
 }
 
 /* --- Visible keyboard focus indicator --- */
@@ -980,6 +1002,10 @@ button:focus:not(:focus-visible),
 summary:focus:not(:focus-visible) .summary-target {
   outline: none;
   box-shadow: none;
+
+  &::after {
+    display: none;
+  }
 }
 
 a:focus-visible,
