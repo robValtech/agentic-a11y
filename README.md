@@ -125,3 +125,64 @@ npm run test:scripts
 ```bash
 npm run test:scripts:coverage
 ```
+
+---
+
+## Stakeholder value
+
+- **Designers:** Early feedback about content structure, labelling and accessibility/usability issues
+- **Developers:** Annotated designs, semantic and structural aid
+- **Tester:** An accurate description of what I should be hearing from the screen reader when interacting with various elements on the page
+
+## Opportunities
+
+- Emulators for testing visual impairements and conditions (Just like in Storybook)
+- Figma plugin
+- Full screen view of the annotated design
+- List of headings
+- List of landmarks
+- Focus order ([5](#stakeholder-needs))
+- Screen reader announcements: How each element/region is announced in Jaws/NVDA/VoiceOver ([6](#stakeholder-needs))
+- Advanced Focus management: Should an element be keyboard focusable and which element should receive programmatic keyboard focus? ([7](#stakeholder-needs))
+
+### Stakeholder needs
+
+| ID  | Need                                                                                                                                                    | Category              | Stakeholder                |
+| --- | ------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------- | -------------------------- |
+| 1   | I want to see the list of **landmarks** that build up the page.                                                                                         | Structure & Semantics | Designer, Engineer         |
+| 2   | I want to see the list of **UI components** that build up the page.                                                                                     | Structure & Semantics | Designer, Engineer         |
+| 3   | I want to see the **accessibility issues** with the design.                                                                                             | WCAG, WAI-ARIA        | Designer                   |
+| 4   | I want to see the **best practices** for structuring and naming landmarks and UI components.                                                            | WCAG, WAI-ARIA        | Designer, Engineer         |
+| 5   | I want to see the **focus order** on the page.                                                                                                          | Interaction           | Designer, Engineer, Tester |
+| 6   | I want to know what the **screen reader** announces when a specific element is is focussed.                                                             | Interaction           | Designer, Engineer, Tester |
+| 7   | I want to know which elements should receive manual keyboard focus, and which elements should receive programmatic focus. (**Active focus management**) | Interaction           | Designer, Engineer, Tester |
+| 8   | I want to know how certain **user personas** are affected by an accessibility/usability issue.                                                          | Personas              | Designer, Engineer, Tester |
+
+### Best practices
+
+- Visually hidden content for screen reader users only vs. hiding content from screen reader users
+- Images needing alt text or should be hidden from screen reader users
+- Heading levels and hierarchy
+- Table captions and column headers
+- WAI-ARIA APG links
+- Accessible name with `id`+`aria-labelledby`
+- "Read more" links and "Change" buttons
+- Using icon-only buttons
+- Providing additional context for screen reader users
+- Hiding icons from screen readers
+
+## Version One Definition
+
+- VSCode + CoPilot Agent
+- Single screenshot input
+- Interactive HTML report output
+- Reliable, consistent output
+- Contents:
+  - List of landmarks (accessible name, role)
+  - List of components (accessible name, role, focusable)
+  - List of issues with WCAG links and fixes (confidence level, risk level, WCAG SC link, description, how to fix)
+  - Design with overlays
+    - Landmarks
+    - UI Components
+    - A11Y Issues
+    - Full screen mode
