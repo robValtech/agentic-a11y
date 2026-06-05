@@ -88,7 +88,7 @@
       >
         <summary>
           <h2 id="design-section-heading" class="summary-target">
-            Annotated designs
+            Annotated design
           </h2>
         </summary>
 
@@ -191,23 +191,32 @@
       <details
         class="section section--collapsible easy-read-content"
         aria-labelledby="elements-section-heading"
+        open
       >
         <summary>
           <h2 id="elements-section-heading" class="summary-target">
-            UI: structure &amp; interaction
+            User interface
           </h2>
         </summary>
 
-        <section
-          class="section easy-read-content"
-          aria-labelledby="landmarks-section-heading"
-        >
-          <h3 id="landmarks-section-heading">Landmarks</h3>
-          <table
-            class="elements-table"
-            id="landmarks-table"
-            aria-label="Landmarks"
+        <p>
+          Using
+          <a href="https://atomicdesign.bradfrost.com">Atomic Design</a> and
+          <a href="https://www.componentdriven.org"
+            >CDD (Component-Driven Development)</a
           >
+          practices and
+          <a href="https://www.w3.org/WAI/ARIA/apg/patterns"
+            >WAI-ARIA APG patterns</a
+          >, the LLM identified the following <strong>UI components</strong> and
+          structural content blocks:
+        </p>
+
+        <div class="section easy-read-content">
+          <table class="elements-table" id="landmarks-table">
+            <caption>
+              <h3 id="landmarks-section-heading">Page landmarks</h3>
+            </caption>
             <thead>
               <tr>
                 <th scope="col" data-sort-col="id" aria-sort="none">
@@ -236,18 +245,13 @@
               {{LANDMARK_TABLE_ROWS}}
             </tbody>
           </table>
-        </section>
+        </div>
 
-        <section
-          class="section easy-read-content"
-          aria-labelledby="components-section-heading"
-        >
-          <h3 id="components-section-heading">Components</h3>
-          <table
-            class="elements-table"
-            id="components-table"
-            aria-label="Components"
-          >
+        <div class="section easy-read-content">
+          <table class="elements-table" id="components-table">
+            <caption>
+              <h3 id="components-section-heading">UI components</h3>
+            </caption>
             <thead>
               <tr>
                 <th scope="col" data-sort-col="id" aria-sort="none">
@@ -285,7 +289,7 @@
               {{COMPONENT_TABLE_ROWS}}
             </tbody>
           </table>
-        </section>
+        </div>
       </details>
 
       <details
@@ -294,17 +298,34 @@
       >
         <summary>
           <h2 id="a11y-issues-section-heading" class="summary-target">
-            Accessibility issues
+            Accessibility findings
           </h2>
         </summary>
+
+        <p>
+          Using a <strong>0-100 confidence-scoring system</strong> the LLM ranks
+          the identified accessibility issues on a
+          <strong>critical/high/medium severity scale</strong>.
+        </p>
+        <p>
+          Accessibility issues that relate to specific UI components are marked
+          accordingly and are listed in the
+          <strong>"Accessibility issues"</strong> section.
+        </p>
+        <p>
+          Issues with low confidence score are listed in the
+          <strong>"Possible accessibility issues"</strong> section. Low
+          confidence issues that are still worth checking can be potentially
+          missing <strong>focus state</strong> or
+          <strong>visual icons</strong> possibly left exposed to screen reader
+          users.
+        </p>
 
         <section
           class="section easy-read-content"
           aria-labelledby="issues-section-heading"
         >
-          <h3 id="issues-section-heading">
-            High Confidence Accessibility Issues
-          </h3>
+          <h3 id="issues-section-heading">Accessibility issues</h3>
           <div>{{HIGH_CONFIDENCE_ISSUES}}</div>
         </section>
 
@@ -313,13 +334,8 @@
           aria-labelledby="flagged-issues-section-heading"
         >
           <h3 id="flagged-issues-section-heading">
-            Possible Accessibility Issues
+            Possible accessibility issues
           </h3>
-          <p>
-            Manual review is recommended to make sure the following
-            low-confidence issues flagged by the analyst are either further
-            investigated or marked as false positives.
-          </p>
           <div>{{FLAGGED_ISSUES}}</div>
         </section>
       </details>
@@ -327,7 +343,6 @@
       <details
         class="section section--collapsible easy-read-content"
         id="page-section--about"
-        open
       >
         <summary>
           <h2 class="summary-target">About this report</h2>
@@ -361,7 +376,7 @@
         <p>
           The contents of this report were generated by AI. To ensure accurate,
           reliable, and consistent output the LLM was provided with carefully
-          constructed instructions, guard rails and validation checks. Still,
+          constructed instructions, guard rails and validation checks – still,
           there can be mistakes and human review is always recommended.
         </p>
 
@@ -454,7 +469,7 @@
             </svg>
           </a>
           <span
-            >with <span aria-hidden="true">💙</span
+            >with <span aria-hidden="true">❤️</span
             ><span class="sr-only">love</span>.</span
           >
         </p>
