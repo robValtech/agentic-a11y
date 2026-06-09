@@ -2,7 +2,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Accessibility Review — {{FILENAME}}</title>
+    <title>🧑‍🔬 A11YLab Report</title>
     <link rel="stylesheet" href="report.template.css" />
     <!-- Resolve theme before first paint to avoid flash of wrong theme -->
     <script src="report.head-scripts.template.js"></script>
@@ -13,8 +13,7 @@
     <header class="page-header" aria-label="Site header">
       <div class="page-header__inner">
         <h1 class="page-header__title-group">
-          <span class="page-header__label">Accessibility Review</span
-          ><span class="page-header__title">{{FILENAME}}</span>
+          <span class="page-header__title">🧑‍🔬 A11YLab Report</span>
         </h1>
         <button
           class="theme-toggle"
@@ -85,6 +84,7 @@
       <details
         class="section section--collapsible easy-read-content"
         aria-labelledby="design-section-heading"
+        open
       >
         <summary>
           <h2 id="design-section-heading" class="summary-target">
@@ -209,7 +209,7 @@
           <a href="https://www.w3.org/WAI/ARIA/apg/patterns"
             >WAI-ARIA APG patterns</a
           >, the LLM identified the following <strong>UI components</strong> and
-          structural content blocks:
+          structural content groups:
         </p>
 
         <div class="section easy-read-content">
@@ -303,8 +303,8 @@
         </summary>
 
         <p>
-          Using a <strong>0-100 confidence-scoring system</strong> the LLM ranks
-          the identified accessibility issues on a
+          Using a <strong>0.0 to 1.0 confidence-scoring system</strong> the LLM
+          ranks the identified accessibility issues on a
           <strong>critical/high/medium severity scale</strong>.
         </p>
         <p>
