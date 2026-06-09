@@ -1,7 +1,13 @@
 import { test, beforeEach, afterEach } from 'node:test';
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
-import { writeFileSync, rmSync, mkdirSync } from 'node:fs';
+import {
+  writeFileSync,
+  readFileSync,
+  existsSync,
+  rmSync,
+  mkdirSync,
+} from 'node:fs';
 import { resolve, dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -33,8 +39,13 @@ function writeDesign() {
   writeFileSync(join(TMP_DIR, 'design.jpg'), '', 'utf8');
 }
 
+function readOutput(name) {
+  return readFileSync(join(TMP_DIR, name), 'utf8');
+}
+
 function validAnalysis() {
   return JSON.stringify({
+    meta: { keyFindings: 'KEY_FINDINGS_SENTINEL' },
     elements: [
       { tag: 'main', name: 'Main content' },
       { tag: 'navigation', name: 'Primary nav' },
@@ -82,4 +93,43 @@ test('create-report: exits non-zero when analysis.json is malformed', () => {
   writeDesign();
   const result = spawnScript(['--dir', TMP_DIR]);
   assert.notEqual(result.status, 0);
+});
+
+test('create-report: writes index.html and copies the three assets', () => {
+  writeAnalysis(validAnalysis());
+  writeDesign();
+  spawnScript(['--dir', TMP_DIR]);
+  assert.ok(existsSync(join(TMP_DIR, 'index.html')), 'index.html');
+  assert.ok(existsSync(join(TMP_DIR, 'head-scripts.js')), 'head-scripts.js');
+  assert.ok(existsSync(join(TMP_DIR, 'scripts.js')), 'scripts.js');
+  assert.ok(existsSync(join(TMP_DIR, 'style.css')), 'style.css');
+});
+
+test('create-report: index.html references the renamed assets', () => {
+  writeAnalysis(validAnalysis());
+  writeDesign();
+  spawnScript(['--dir', TMP_DIR]);
+  const html = readOutput('index.html');
+  assert.match(html, /href="style\.css"/);
+  assert.match(html, /src="head-scripts\.js"/);
+  assert.match(html, /src="scripts\.js"/);
+});
+
+test('create-report: index.html has no leftover template references', () => {
+  writeAnalysis(validAnalysis());
+  writeDesign();
+  spawnScript(['--dir', TMP_DIR]);
+  const html = readOutput('index.html');
+  assert.doesNotMatch(html, /report\.template\.css/);
+  assert.doesNotMatch(html, /report\.head-scripts\.template\.js/);
+  assert.doesNotMatch(html, /report\.scripts\.template\.js/);
+  assert.doesNotMatch(html, /\{\{EXECUTIVE_SUMMARY\}\}/);
+});
+
+test('create-report: injects keyFindings as the executive summary', () => {
+  writeAnalysis(validAnalysis());
+  writeDesign();
+  spawnScript(['--dir', TMP_DIR]);
+  const html = readOutput('index.html');
+  assert.match(html, /<p>KEY_FINDINGS_SENTINEL<\/p>/);
 });

@@ -38,9 +38,11 @@ const elements = Array.isArray(analysisData.elements)
   : [];
 const landmarks = elements.filter((element) => LANDMARK_TAGS.has(element.tag));
 const executiveSummary = `<p>${analysisData.meta.keyFindings}</p>`;
+const imageAspectRatio = `${((analysisData.meta.designFile.height / analysisData.meta.designFile.width) * 100).toFixed(2)}%`;
 
 /* Update HTML contents */
 const html = readFileSync(join(TEMPLATE_DIR, 'report.template.html'), 'utf8')
+  .replace('{{ASPECT_RATIO}}', imageAspectRatio)
   .replace('{{EXECUTIVE_SUMMARY}}', executiveSummary)
   .replace('href="report.template.css"', 'href="style.css"')
   .replace('src="report.head-scripts.template.js"', 'src="head-scripts.js"')

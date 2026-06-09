@@ -11,7 +11,7 @@
   "properties": {
     "version": {
       "type": "string",
-      "const": "1.0.0",
+      "const": "1.0.1",
       "description": "Schema version. Must match the expected contract version to ensure compatibility with validation and processing logic."
     },
     "meta": {
@@ -38,7 +38,7 @@
       "type": "object",
       "description": "Metadata about the analysis run, including input identification and high-level summary.",
       "required": [
-        "fileName",
+        "designFile",
         "modelName",
         "timestampStart",
         "timestampEnd",
@@ -47,9 +47,9 @@
       ],
       "additionalProperties": false,
       "properties": {
-        "fileName": {
-          "type": "string",
-          "description": "Name of the analysed image file."
+        "designFile": {
+          "$ref": "#/definitions/designFile",
+          "description": "Details of the analysed image file."
         },
         "modelName": {
           "type": "string",
@@ -70,6 +70,30 @@
         "keyFindings": {
           "type": "string",
           "description": "A brief (1–2 sentence) summary of the most significant accessibility issues identified."
+        }
+      }
+    },
+    "designFile": {
+      "type": "object",
+      "description": "Details of the design file.",
+      "required": [
+        "name",
+        "width",
+        "height"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "The original file name including extension."
+        },
+        "width": {
+          "type": "number",
+          "description": "The width of the image in pixels."
+        },
+        "height": {
+          "type": "number",
+          "description": "The height of the image in pixels."
         }
       }
     },
