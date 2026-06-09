@@ -1,6 +1,6 @@
 import { test, mock } from 'node:test';
 import assert from 'node:assert/strict';
-import { parseArgs, assertArg } from './helpers.mjs';
+import { parseArgs, assertArg, LANDMARK_TAGS } from './helpers.mjs';
 
 // ── parseArgs ─────────────────────────────────────────────────────────────────
 
@@ -67,4 +67,32 @@ test('assertArg: logs correct error message when arg is missing', () => {
     'Error: missing required argument --schema',
   );
   mock.restoreAll();
+});
+
+// ── LANDMARK_TAGS ─────────────────────────────────────────────────────────────
+
+test('LANDMARK_TAGS: contains all expected landmark roles', () => {
+  const expected = [
+    'banner',
+    'complementary',
+    'contentinfo',
+    'form',
+    'main',
+    'navigation',
+    'region',
+    'section',
+    'search',
+  ];
+  for (const tag of expected) {
+    assert.ok(
+      LANDMARK_TAGS.has(tag),
+      `expected LANDMARK_TAGS to contain "${tag}"`,
+    );
+  }
+  assert.equal(LANDMARK_TAGS.size, expected.length);
+});
+
+test('LANDMARK_TAGS: excludes non-landmark tags', () => {
+  assert.equal(LANDMARK_TAGS.has('a'), false);
+  assert.equal(LANDMARK_TAGS.has('button'), false);
 });
