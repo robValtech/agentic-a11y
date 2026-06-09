@@ -553,21 +553,25 @@ a.bubble:focus-visible {
   border-radius: 50%;
 }
 
-/* --- Elements table --- */
 .elements-panel {
   margin-top: 40px;
 }
 
-.elements-table {
+/* --- Table --- */
+.table {
   width: 100%;
   border-collapse: collapse;
   font-size: 14px;
   background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
+
+  caption {
+    text-align: left;
+  }
 }
 
-.elements-table th {
+.table th {
   text-align: left;
   padding: var(--space-sm) var(--space-md);
   background: var(--color-surface-raised);
@@ -579,40 +583,40 @@ a.bubble:focus-visible {
   color: var(--color-text-muted);
 }
 
-.elements-table td {
+.table td {
   padding: var(--space-sm) var(--space-md);
   border-bottom: 1px solid var(--color-border-subtle);
   vertical-align: middle;
   color: var(--color-text);
 }
 
-.elements-table td:last-child {
+.table td:last-child {
   text-align: center;
 }
 
-.elements-table th:first-child,
-.elements-table th:last-child {
+.table th:first-child,
+.table th:last-child {
   text-align: center;
 }
 
-.elements-table th:first-child .sort-btn,
-.elements-table th:last-child .sort-btn {
+.table th:first-child .sort-btn,
+.table th:last-child .sort-btn {
   justify-content: center;
 }
 
-.elements-table tr:last-child td {
+.table tr:last-child td {
   border-bottom: none;
 }
 
-.elements-table tbody tr:target {
+.table tbody tr:target {
   border: 2px solid var(--color-accent);
 }
 
-.elements-table tbody tr:hover td {
+.table tbody tr:hover td {
   background: var(--color-surface-raised);
 }
 
-.elements-table code {
+.table code {
   font-family: var(--font-mono);
   font-size: 12px;
   background: var(--color-surface-raised);
@@ -622,7 +626,7 @@ a.bubble:focus-visible {
   border: 1px solid var(--color-border);
 }
 
-.elements-table .bubble {
+.table .bubble {
   position: relative;
   transform: none;
   cursor: default;
@@ -633,16 +637,16 @@ a.bubble:focus-visible {
   margin: 0 auto;
 }
 
-.elements-table a.bubble {
+.table a.bubble {
   cursor: pointer;
 }
 
-.elements-table a.bubble:hover {
+.table a.bubble:hover {
   transform: none;
   box-shadow: 0 2px 8px rgb(0 0 0 / 35%);
 }
 
-.table--meta {
+.table--narrow {
   width: 50%;
 }
 
