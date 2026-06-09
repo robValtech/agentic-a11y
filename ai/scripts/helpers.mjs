@@ -27,3 +27,15 @@ export function assertArg(args, name) {
     process.exit(1);
   }
 }
+
+export const LANDMARK_TAGS = new Set([
+  'banner',
+  'complementary',
+  'contentinfo',
+  'form',
+  'main',
+  'navigation',
+  'region',
+  'section',
+  'search',
+]);
