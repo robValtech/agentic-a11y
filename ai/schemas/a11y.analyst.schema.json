@@ -115,6 +115,10 @@
           "type": "string",
           "description": "Accessible name or visible label of the element as perceived by users (e.g. button text, input label, link text, region name)."
         },
+        "description": {
+          "type": "string",
+          "description": "A concise description of the purpose of the element from the user's perspective."
+        },
         "boundingBox": {
           "$ref": "#/definitions/boundingBox",
           "description": "Approximate bounding box of the element within the image, using pixel coordinates relative to the top-left corner."
@@ -143,22 +147,26 @@
         "x": {
           "type": "number",
           "minimum": 0,
-          "description": "Horizontal position (in pixels) from the left edge of the image to the top-left corner of the element."
+          "maximum": 1,
+          "description": "Horizontal position from the top edge of the image to the top-left corner of the element. Percentage value relative to the width of the image."
         },
         "y": {
           "type": "number",
           "minimum": 0,
-          "description": "Vertical position (in pixels) from the top edge of the image to the top-left corner of the element."
+          "maximum": 1,
+          "description": "Vertical position from the top edge of the image to the top-left corner of the element. Percentage value relative to the height of the image."
         },
         "width": {
           "type": "number",
           "minimum": 0,
-          "description": "Approximate width of the element in pixels."
+          "maximum": 1,
+          "description": "Approximate width of the element in percentage relative to the width of the image."
         },
         "height": {
           "type": "number",
           "minimum": 0,
-          "description": "Approximate height of the element in pixels."
+          "maximum": 1,
+          "description": "Approximate height of the element in percentage relative to the height of the image."
         }
       }
     },
