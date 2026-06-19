@@ -45,7 +45,7 @@
   --color-bubble-default-text: var(--color-bubble-default-border);
   --color-bubble-default-text-hover: #ffffff;
   --color-landmark-annotation-bg--rgb: 0, 255, 0;
-  --color-landmark-annotation-border--rgb: 0, 0, 0;
+  --color-landmark-annotation-border--rgb: 255, 255, 255;
   --color-landmark-annotation-text: var(--color-bubble-default-text);
   --color-landmark-annotation-text-hover: var(--color-bubble-default-text);
 
@@ -141,7 +141,7 @@
   --color-bubble-default-text: #efefef;
   --color-bubble-default-text-hover: #ffffff;
   --color-landmark-annotation-bg--rgb: 0, 255, 0;
-  --color-landmark-annotation-border--rgb: 255, 255, 255;
+  --color-landmark-annotation-border--rgb: 0, 0, 0;
   --color-landmark-annotation-text--rgb: 0, 0, 0;
   --color-landmark-annotation-text-hover: var(
     --color-landmark-annotation-text--rgb
@@ -524,9 +524,9 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
+  width: 32px;
+  height: 24px;
+  border-radius: 4px;
   font-size: 11px;
   font-weight: 700;
   font-family: var(--font-sans);
@@ -619,9 +619,6 @@ a.bubble:focus-visible {
   transform: none;
   cursor: default;
   flex-shrink: 0;
-  width: 32px;
-  height: 32px;
-  font-size: 12px;
   margin: 0 auto;
 }
 
