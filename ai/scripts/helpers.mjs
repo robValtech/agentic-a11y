@@ -21,10 +21,16 @@ export function parseArgs(argv = []) {
   return args;
 }
 
-export function assertArg(args, name) {
+export function assertArg(args, name, isQuiet) {
   if (!args[name]) {
-    console.error(`Error: missing required argument --${name}`);
-    process.exit(1);
+    if (!isQuiet) {
+      console.error(`Error: missing required argument --${name}`);
+      process.exit(1);
+    } else {
+      console.info(`Info: missing argument --${name}`);
+      return false;
+    }
+    return true;
   }
 }
 
@@ -104,18 +110,37 @@ export function buildLandmarkAnnotations(landmarks) {
     .map((landmark, index) => {
       const id = `L${index + 1}`;
       const { boundingBox = {}, name } = landmark;
+
+      const d = 1.1;
+      const width = toPercent(boundingBox.width * d);
+      const height = toPercent(boundingBox.height * d);
+      const top = toPercent(boundingBox.y + boundingBox.height * (1 - d) * 0.5);
+      const left = toPercent(boundingBox.x + boundingBox.width * (1 - d) * 0.5);
+
       const style = [
-        `left: ${toPercent(boundingBox.x)}`,
-        `top: ${toPercent(boundingBox.y)}`,
-        `width: ${toPercent(boundingBox.width)}`,
-        `height: ${toPercent(boundingBox.height)}`,
+        `left: ${left}`,
+        `top: ${top}`,
+        `width: ${width}`,
+        `height: ${height}`,
       ].join('; ');
 
       return (
-        `          <div class="landmark-annotation" style="${style}" aria-label="${escapeHtml(`Landmark ${id}: ${name ?? ''}`)}">\n` +
-        `            <span class="landmark-annotation__marker" aria-hidden="true">${id}</span>\n` +
+        `          <div class="landmark-annotation" style="${style}" aria-label="${escapeHtml(`Landmark ${id}: ${name ?? ''}, ${landmark.tag}`)}">\n` +
+        `            <span class="bubble bubble--neutral" aria-hidden="true">${id}</span>\n` +
         `          </div>`
       );
     })
     .join('\n');
+}
+
+// ---------------------------------------------------------------------------
+// Get a human readable date based on a timestamp
+// ---------------------------------------------------------------------------
+export function getFormattedDate(timestamp) {
+  const pad = (n, w = 2) => String(n).padStart(w, '0');
+  const ts = timestamp ? new Date(timestamp) : new Date();
+  const formattedDate =
+    `${pad(ts.getDate())}/${pad(ts.getMonth() + 1)}/${ts.getFullYear()} ` +
+    `${pad(ts.getHours())}:${pad(ts.getMinutes())}:${pad(ts.getSeconds())}`;
+  return formattedDate;
 }

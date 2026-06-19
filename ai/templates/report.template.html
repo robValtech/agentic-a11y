@@ -74,7 +74,10 @@
     </header>
 
     <main id="main-content" aria-label="Accessibility review report">
-      <div class="tabbed-content-layout design-wrapper">
+      <div
+        class="tabbed-content-layout design-wrapper"
+        style="--design-aspect-ratio: {{DESIGN_ASPECT_RATIO}};"
+      >
         <div role="tablist" aria-label="Content selector" class="tab-list">
           <figure class="design-container"></figure>
           <button
@@ -108,7 +111,9 @@
             tabindex="-1"
             class="tab"
           >
-            UI components
+            <span>UI components</span>
+            <span aria-hidden="true">🚧</span>
+            <span class="sr-only"> (coming soon)</span>
           </button>
           <button
             type="button"
@@ -119,7 +124,9 @@
             tabindex="-1"
             class="tab"
           >
-            Accessibility issues
+            <span>Accessibility issues</span>
+            <span aria-hidden="true">🚧</span>
+            <span class="sr-only"> (coming soon)</span>
           </button>
           <button
             type="button"
@@ -130,7 +137,9 @@
             tabindex="-1"
             class="tab"
           >
-            Accessibility flags
+            <span>Accessibility flags</span>
+            <span aria-hidden="true">🚧</span>
+            <span class="sr-only"> (coming soon)</span>
           </button>
           <button
             type="button"
@@ -160,7 +169,7 @@
             <div class="tab-panel__design">
               <figure class="design-container" id="design-summary">
                 <figcaption class="sr-only">
-                  Design screenshot of {{FILENAME}}.
+                  Design screenshot of {{METADATA_FILE_NAME}}.
                 </figcaption>
               </figure>
             </div>
@@ -181,8 +190,8 @@
             <div class="tab-panel__design">
               <figure class="design-container" id="design-landmarks">
                 <figcaption class="sr-only">
-                  Annotated design screenshot of {{FILENAME}} with visual
-                  indicators outlining the page landmarks.
+                  Annotated design screenshot of {{METADATA_FILE_NAME}} with
+                  visual indicators outlining the page landmarks.
                 </figcaption>
                 {{LANDMARK_MARKERS}}
               </figure>
@@ -251,8 +260,8 @@
             <div class="tab-panel__design">
               <figure class="design-container" id="design-ui-components">
                 <figcaption class="sr-only">
-                  Annotated design screenshot of {{FILENAME}} with visual
-                  indicators outlining the UI components.
+                  Annotated design screenshot of {{METADATA_FILE_NAME}} with
+                  visual indicators outlining the UI components.
                 </figcaption>
                 {{UI_COMPONENT_MARKERS}}
               </figure>
@@ -328,8 +337,8 @@
             <div class="tab-panel__design">
               <figure class="design-container" id="design-a11y-issues">
                 <figcaption class="sr-only">
-                  Annotated design screenshot of {{FILENAME}} with visual
-                  indicators highlighting the accessibility issues found.
+                  Annotated design screenshot of {{METADATA_FILE_NAME}} with
+                  visual indicators highlighting the accessibility issues found.
                 </figcaption>
                 {{A11Y_ISSUE_MARKERS}}
               </figure>
@@ -360,8 +369,8 @@
             <div class="tab-panel__design">
               <figure class="design-container" id="design-a11y-flags">
                 <figcaption class="sr-only">
-                  Annotated design screenshot of {{FILENAME}} with visual
-                  indicators highlighting potential accessibility issues.
+                  Annotated design screenshot of {{METADATA_FILE_NAME}} with
+                  visual indicators highlighting potential accessibility issues.
                 </figcaption>
                 {{A11Y_FLAG_MARKERS}}
               </figure>
