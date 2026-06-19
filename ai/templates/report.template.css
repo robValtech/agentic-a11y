@@ -10,6 +10,7 @@
   --color-surface-raised: #1e2236;
   --color-border: #2a2f4a;
   --color-border-subtle: #1e2236;
+  --color-sidebar-border: #dde1f0;
   --color-text: #dde1f0;
   --color-text-muted: #7880a0;
   --color-text-code: #a5b4fc;
@@ -38,6 +39,16 @@
   --severity-neutral-border: #000000;
   --severity-neutral-text: #efefef;
 
+  /* Annotation colours */
+  --color-bubble-default-bg: #efefef;
+  --color-bubble-default-border: #0d0f1a;
+  --color-bubble-default-text: var(--color-bubble-default-border);
+  --color-bubble-default-text-hover: #ffffff;
+  --color-landmark-annotation-bg--rgb: 0, 255, 0;
+  --color-landmark-annotation-border--rgb: 0, 0, 0;
+  --color-landmark-annotation-text: var(--color-bubble-default-text);
+  --color-landmark-annotation-text-hover: var(--color-bubble-default-text);
+
   --font-sans:
     -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial,
     sans-serif;
@@ -57,6 +68,8 @@
 
   --max-content-width: 1400px;
   --max-text-content-width: 800px;
+  --sidebar-width: 320px;
+  --tabbed-content-width: 620px;
 
   --tr-easing: ease;
   --tr-duration: 0.15s;
@@ -70,6 +83,7 @@
     --color-surface-raised: #eef0fa;
     --color-border: #d4d8ef;
     --color-border-subtle: #eef0fa;
+    --color-sidebar-border: #eef0fa;
     --color-text: #1c1f35;
     --color-text-muted: #5a6080;
     --color-text-code: #3b5adb;
@@ -120,6 +134,18 @@
   --severity-critical-label: #cc0000;
   --severity-high-label: #c45f00;
   --severity-medium-label: #4d6000;
+
+  /* Annotation colours */
+  --color-bubble-default-bg: #0d0f1a;
+  --color-bubble-default-border: #1c1f35;
+  --color-bubble-default-text: #efefef;
+  --color-bubble-default-text-hover: #ffffff;
+  --color-landmark-annotation-bg--rgb: 0, 255, 0;
+  --color-landmark-annotation-border--rgb: 255, 255, 255;
+  --color-landmark-annotation-text--rgb: 0, 0, 0;
+  --color-landmark-annotation-text-hover: var(
+    --color-landmark-annotation-text--rgb
+  );
 }
 
 /* --- Reset & base --- */
@@ -191,96 +217,13 @@ body {
   user-select: none;
 }
 
-/* --- Skip link --- */
-.skip-link {
-  position: absolute;
-  top: -100%;
-  left: var(--space-md);
-  z-index: 200;
-  padding: var(--space-sm) var(--space-md);
-  background: var(--color-surface);
-  color: var(--color-accent);
-  font-size: 14px;
-  font-weight: 600;
-  border: 2px solid var(--color-accent);
-  border-radius: var(--radius-md);
-  text-decoration: none;
-}
-
-.skip-link:focus-visible {
-  top: var(--space-md);
-}
-
-/* --- Page header --- */
-.page-header {
-  background-color: var(--color-surface);
-  border-bottom: 1px solid var(--color-border);
-  padding: 0 var(--space-xl);
-}
-
-.page-header__inner {
-  margin: 0 auto;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--space-md);
-}
-
-.page-header__title-group {
-  display: flex;
-  align-items: baseline;
-  gap: var(--space-md);
-  min-width: 0;
-}
-
-.page-header__label {
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--color-text-muted);
-  white-space: nowrap;
-}
-
-.page-header__title {
-  font-size: 16px;
-  font-weight: 600;
-  color: var(--color-heading);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-/* --- Page footer --- */
-.page-footer {
-  background-color: var(--color-surface);
-  border-top: 1px solid var(--color-border);
-  padding: 0 var(--space-xl);
-}
-
-.page-footer__inner {
-  margin: 0 auto;
-  display: flex;
-  align-items: center;
-  gap: var(--space-sm);
-}
-
-.page-footer__text-block:not(:last-child) {
-  display: flex;
-  align-items: center;
-  gap: var(--space-xs);
-}
-
-.page-footer__valtech-logo {
-  width: 73px;
-  top: -1px;
-  position: relative;
-}
-
 /* --- Main layout --- */
 .tabbed-content-layout {
   display: grid;
-  grid-template-columns: min(20%, 300px) 1fr;
+  grid-template-columns: var(--sidebar-width) minmax(
+      var(--tabbed-content-width),
+      1fr
+    );
   grid-template-rows: 1fr;
   min-height: 100vh;
   align-items: start;
@@ -289,22 +232,10 @@ body {
 .tab-panels {
   padding: 4rem 8rem;
   min-height: 100vh;
+  min-width: var(--tabbed-content-width);
 }
 
 /* --- Tab list --- */
-.tab-list {
-  position: sticky;
-  top: 0;
-  height: 100vh;
-  overflow-x: hidden;
-  overflow-y: auto;
-  border-right: 1px solid #ddd;
-  display: flex;
-  gap: 2px;
-  flex-direction: column;
-  background-color: var(--color-bg);
-}
-
 .tab {
   display: flex;
   align-items: center;
@@ -318,8 +249,8 @@ body {
   border-left: 3px solid transparent;
   text-align: left;
   transition:
-    background-color 0.15s ease,
-    border-color 0.15s ease;
+    background-color var(--tr-duration) ease,
+    border-color var(--tr-duration) ease;
 }
 
 .tab:hover {
@@ -459,32 +390,133 @@ body {
   --design-aspect-ratio: 1.22448979;
 }
 
+.design-container-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: var(--color-surface-raised);
+  border-radius: var(--radius-md);
+}
+
 .design-container {
   position: relative;
-  /* max-width: 1440px; */
+  max-width: 1440px;
   width: 100%;
+  margin-block: 3vw;
+  margin-inline: 4vw;
   border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
-  overflow: hidden;
   aspect-ratio: var(--design-aspect-ratio);
   background: url("design.jpg") 50% 50% no-repeat;
   background-size: cover;
   background-color: var(--color-surface-raised);
 }
 
-.tab-list .design-container {
-  max-width: 90%;
+/* Sidebar */
+.sidebar {
+  position: sticky;
+  top: 0;
+  display: flex;
+  min-width: var(--sidebar-width);
+  min-height: 100vh;
+  flex-direction: column;
+  border-right: 1px solid var(--color-sidebar-border);
+
+  .design-container,
+  .sidebar__header,
+  .sidebar__footer {
+    width: 90%;
+    margin-inline: auto;
+  }
+
+  .design-container {
+    margin-block: 1rem 3rem;
+    border-radius: var(--radius-sm);
+  }
+}
+
+.sidebar__header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.page-title {
   margin-block: 2rem;
-  align-self: center;
+}
+
+.page-title__heading {
+  display: block;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--color-heading);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.page-title__tagline {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-text);
+  white-space: nowrap;
+}
+
+.sidebar__footer {
+  color: var(--color-text);
+  align-self: flex-end;
+  padding-bottom: 1rem;
+}
+
+.sidebar__text-block {
+  display: flex;
+  align-items: center;
+  margin-block: 0.2rem;
+}
+
+.valtech-logo {
+  width: 73px;
+  top: -1px;
+  position: relative;
+  margin-inline: var(--space-xs);
+}
+
+.sidebar__tab-list {
+  display: flex;
+  flex: 1 1 auto;
+  gap: 2px;
+  margin-bottom: 4rem;
+  flex-direction: column;
+  background-color: var(--color-bg);
 }
 
 /* --- Landmark annotations (on design image) --- */
 .landmark-annotation {
   position: absolute;
-  background-color: rgb(80 225 32 / 10%);
-  border: 1px dashed rgb(0 0 0 / 60%);
+  background-color: rgba(var(--color-landmark-annotation-bg--rgb), 0.1);
+  border: 1px dashed rgba(var(--color-landmark-annotation-border--rgb), 0.6);
   z-index: 8;
   border-radius: var(--radius-sm);
+  transition:
+    background-color var(--tr-duration) ease,
+    border-color var(--tr-duration) ease,
+    transform var(--tr-duration) ease-out;
+
+  &:hover {
+    transform: scale(1.005);
+    background-color: rgba(var(--color-landmark-annotation-bg--rgb), 0.5);
+    border-color: rgba(var(--color-landmark-annotation-border--rgb), 1);
+
+    .bubble {
+      transform: translate(-50%, -50%) scale(1.2);
+      background-color: rgb(var(--color-landmark-annotation-bg--rgb));
+      color: var(--color-landmark-annotation-text-hover);
+    }
+  }
 }
 
 /* --- Bubbles (on design image) --- */
@@ -507,6 +539,11 @@ body {
   transition:
     transform var(--tr-duration) ease,
     box-shadow var(--tr-duration) ease;
+  cursor: default;
+  user-select: none;
+  background: var(--color-bubble-default-bg);
+  color: var(--color-bubble-default-text);
+  border: 2px solid var(--color-bubble-default-border);
 }
 
 a.bubble:hover {
@@ -776,23 +813,23 @@ th[aria-sort="descending"] .sort-icon::after {
 }
 
 .bubble--neutral {
-  background: var(--severity-neutral-bg);
-  border: 2px solid var(--severity-neutral-border);
+  background-color: var(--severity-neutral-bg);
+  border-color: var(--severity-neutral-border);
   color: var(--severity-neutral-text);
 }
 .bubble--critical {
-  background: var(--severity-critical-bg);
-  border: 2px solid var(--severity-critical-border);
+  background-color: var(--severity-critical-bg);
+  border-color: var(--severity-critical-border);
   color: var(--severity-critical-text);
 }
 .bubble--high {
-  background: var(--severity-high-bg);
-  border: 2px solid var(--severity-high-border);
+  background-color: var(--severity-high-bg);
+  border-color: var(--severity-high-border);
   color: var(--severity-high-text);
 }
 .bubble--medium {
   background: var(--severity-medium-bg);
-  border: 2px solid var(--severity-medium-border);
+  border-color: var(--severity-medium-border);
   color: var(--severity-medium-text);
 }
 

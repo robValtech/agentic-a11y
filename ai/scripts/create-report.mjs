@@ -55,12 +55,6 @@ const metaData = analysisData.meta;
 const designFile = metaData.designFile;
 const executiveSummary = `<p>${metaData.keyFindings}</p>`;
 const designAspectRatio = `${(1 / (designFile.height / designFile.width)).toFixed(2)}`;
-console.log(
-  designFile.name,
-  designFile.width,
-  designFile.height,
-  designAspectRatio,
-);
 
 const metaDataDate = getFormattedDate(metaData.timestampEnd);
 const formattedMetaRuntime = getFormattedRuntime(

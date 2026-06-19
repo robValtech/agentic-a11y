@@ -87,7 +87,7 @@ export function buildTableRows(
 
       return (
         `          <tr id="${rowIdPrefix}-${id}" data-sort-id="${i + 1}" data-sort-tag="${sortTag}" data-sort-issue="${sortIssue}">\n` +
-        `            <td><span class="bubble bubble--neutral" aria-label="${id}">${id}</span></td>\n` +
+        `            <td><span class="bubble" aria-label="${id}">${id}</span></td>\n` +
         `            <td><code>${escapeHtml(tag ?? '')}</code></td>\n` +
         `            <td>${escapeHtml(name ?? '')}</td>\n` +
         `            <td>${escapeHtml(description ?? '')}</td>${issueCell}\n` +
@@ -111,7 +111,7 @@ export function buildLandmarkAnnotations(landmarks) {
       const id = `L${index + 1}`;
       const { boundingBox = {}, name } = landmark;
 
-      const d = 1.1;
+      const d = 1.01;
       const width = toPercent(boundingBox.width * d);
       const height = toPercent(boundingBox.height * d);
       const top = toPercent(boundingBox.y + boundingBox.height * (1 - d) * 0.5);
@@ -126,7 +126,7 @@ export function buildLandmarkAnnotations(landmarks) {
 
       return (
         `          <div class="landmark-annotation" style="${style}" aria-label="${escapeHtml(`Landmark ${id}: ${name ?? ''}, ${landmark.tag}`)}">\n` +
-        `            <span class="bubble bubble--neutral" aria-hidden="true">${id}</span>\n` +
+        `            <span class="bubble" aria-hidden="true">${id}</span>\n` +
         `          </div>`
       );
     })
