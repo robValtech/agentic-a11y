@@ -104,7 +104,7 @@
               tabindex="-1"
               class="tab"
             >
-              Page landmarks
+              Landmarks
             </button>
             <button
               type="button"
@@ -246,20 +246,36 @@
             hidden
           >
             <div class="tab-panel__intro easy-read">
-              <h2 class="tab-panel__heading">Page landmarks</h2>
-              <p>Coming soon...</p>
+              <h2 class="tab-panel__heading">Landmarks</h2>
+              <p>
+                The correct use of
+                <a
+                  href="https://www.w3.org/WAI/ARIA/apg/patterns/landmarks/examples/general-principles.html"
+                  >HTML landmarks</a
+                >
+                greatly helps non-visual users identifying the main building
+                blocks of a page, and it also helps keyboard users with
+                navigation.
+              </p>
+              <p>
+                <strong>
+                  The following landmarks were found on this page design during
+                  the analysis:</strong
+                >
+              </p>
             </div>
             <div class="tab-panel__design">
               <div class="design-container-wrapper">
                 <figure class="design-container" id="design-landmarks">
                   <figcaption class="sr-only">
                     Annotated design screenshot of {{METADATA_FILE_NAME}} with
-                    visual indicators outlining the page landmarks.
+                    visual indicators outlining the landmarks.
                   </figcaption>
                   {{LANDMARK_MARKERS}}
                 </figure>
               </div>
             </div>
+
             <div class="tab-panel__content">
               <table class="table" id="landmarks-table">
                 <caption>
@@ -293,6 +309,127 @@
                   {{LANDMARK_TABLE_ROWS}}
                 </tbody>
               </table>
+
+              <div class="easy-read">
+                <h3>
+                  Top 10 landmark best practices (not just for developers)
+                </h3>
+                <ol class="list">
+                  <li>
+                    Use native HTML elements, not just ARIA roles. Write
+                    <code class="inline-code">&lt;header&gt;</code>
+                    ,
+                    <code class="inline-code">&lt;nav&gt;</code>
+                    ,
+                    <code class="inline-code">&lt;main&gt;</code>
+                    ,
+                    <code class="inline-code">&lt;aside&gt;</code>
+                    ,
+                    <code class="inline-code">&lt;footer&gt;</code>
+                    — they carry their landmark role automatically. Only reach
+                    for role="region" etc. when a native element isn't
+                    available.
+                  </li>
+                  <li>
+                    One
+                    <code class="inline-code">&lt;main&gt;</code>
+                    per page, always. It identifies the primary content.
+                    Multiple
+                    <code class="inline-code">&lt;main&gt;</code>
+                    elements confuse screen readers and violate the spec.
+                  </li>
+                  <li>
+                    Label repeated landmarks. If you have two
+                    <code class="inline-code">&lt;nav&gt;</code>
+                    elements (e.g. primary + footer navigation), give each an
+                    aria-label:
+
+                    <code class="inline-code"
+                      >&lt;nav aria-label="Primary"&gt;</code
+                    >
+                    and
+                    <code class="inline-code"
+                      >&lt;nav aria-label="Footer"&gt;</code
+                    >
+                    . Same rule applies to multiple
+                    <code class="inline-code">&lt;aside&gt;</code>
+                    or
+                    <code class="inline-code">&lt;section&gt;</code>
+                    elements.
+                  </li>
+                  <li>
+                    Don't nest
+                    <code class="inline-code">&lt;main&gt;</code>
+                    inside other landmarks.
+                    <code class="inline-code">&lt;main&gt;</code>
+                    should be a direct child of
+                    <code class="inline-code">&lt;body&gt;</code>
+                    , sitting alongside
+                    <code class="inline-code">&lt;header&gt;</code>
+                    and
+                    <code class="inline-code">&lt;footer&gt;</code>
+                    — not buried inside a
+                    <code class="inline-code">&lt;div&gt;</code>
+                    soup.
+                  </li>
+                  <li>
+                    Use
+                    <code class="inline-code">&lt;section&gt;</code>
+                    with a heading, not as a generic box. A
+                    <code class="inline-code">&lt;section&gt;</code>
+                    only becomes a meaningful landmark when it has an accessible
+                    name via aria-labelledby pointing to a heading inside it.
+                    Without that, it's invisible to landmark navigation.
+                  </li>
+                  <li>
+                    Every page should have a skip link. Put
+                    <code class="inline-code"
+                      >&lt;a href="#main-content" class="skip-link"&gt;Skip to
+                      main content&lt;/a&gt;</code
+                    >
+                    as the very first focusable element. It lets keyboard users
+                    bypass the nav on every page load.
+                  </li>
+                  <li>
+                    <code class="inline-code">&lt;header&gt;</code> and
+                    <code class="inline-code">&lt;footer&gt;</code> are
+                    context-sensitive. At the top level of
+                    <code class="inline-code">&lt;body&gt;</code> they create
+                    banner and contentinfo landmarks. Inside an
+                    <code class="inline-code">&lt;article&gt;</code> or
+                    <code class="inline-code">&lt;section&gt;</code> they are
+                    just structural — not landmarks. Don't over-use them.
+                  </li>
+                  <li>
+                    Avoid landmark overload. Every
+                    <code class="inline-code">&lt;section&gt;</code> with a
+                    label creates a landmark entry. A page with 20 landmarks is
+                    as hard to navigate as one with none. Aim for 6-8 meaningful
+                    regions max.
+                  </li>
+                  <li>
+                    Test with a real screen reader.
+                    <strong>VoiceOver (Mac/iOS: Cmd+F5)</strong>,
+                    <strong>NVDA (Windows, free)</strong>, or the
+                    <strong
+                      >Accessibility Tree in Chrome DevTools (F12 →
+                      Accessibility tab)</strong
+                    >
+                    will show you exactly what landmarks exist and how they're
+                    announced.
+                  </li>
+                  <li>
+                    Headings and landmarks work together — don't choose one.
+                    Landmarks let users jump between sections; headings (<code
+                      class="inline-code"
+                      >&lt;h1&gt;</code
+                    >-<code class="inline-code">&lt;h6&gt;</code>) let users
+                    skim within a section. A great page needs both: proper
+                    landmark structure and a logical heading hierarchy that
+                    never skips levels.
+                  </li>
+                </ol>
+              </div>
             </div>
           </div>
 

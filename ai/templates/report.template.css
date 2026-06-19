@@ -67,7 +67,7 @@
   --space-2xl: 64px;
 
   --max-content-width: 1400px;
-  --max-text-content-width: 800px;
+  --max-text-content-width: 900px;
   --sidebar-width: 320px;
   --tabbed-content-width: 620px;
 
@@ -287,6 +287,9 @@ body {
 }
 
 .tab-panel__content {
+  & > *:not(:last-child) {
+    margin-bottom: 3rem;
+  }
 }
 
 [role="tabpanel"] {
@@ -602,16 +605,6 @@ a.bubble:focus-visible {
 
 .table tbody tr:hover td {
   background: var(--color-surface-raised);
-}
-
-.table code {
-  font-family: var(--font-mono);
-  font-size: 12px;
-  background: var(--color-surface-raised);
-  color: var(--color-text-code);
-  padding: 2px 6px;
-  border-radius: var(--radius-sm);
-  border: 1px solid var(--color-border);
 }
 
 .table .bubble {
@@ -998,5 +991,26 @@ button:focus-visible,
     box-shadow: 0 0 0 2px var(--color-focus-ring-inner);
     outline-offset: 2px;
     outline: 2px solid var(--color-focus-ring-outer);
+  }
+}
+
+.inline-code {
+  font-family: var(--font-mono);
+  font-size: 90%;
+  display: inline;
+  background: var(--color-surface-raised);
+  color: var(--color-text-code);
+  padding: 2px 6px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-border);
+}
+
+.list {
+  li::marker {
+    font-weight: bold;
+  }
+
+  & > li:not(:last-child) {
+    margin-bottom: 1rem;
   }
 }

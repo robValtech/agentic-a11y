@@ -88,7 +88,7 @@ export function buildTableRows(
       return (
         `          <tr id="${rowIdPrefix}-${id}" data-sort-id="${i + 1}" data-sort-tag="${sortTag}" data-sort-issue="${sortIssue}">\n` +
         `            <td><span class="bubble" aria-label="${id}">${id}</span></td>\n` +
-        `            <td><code>${escapeHtml(tag ?? '')}</code></td>\n` +
+        `            <td><code class="inline-code">${escapeHtml(tag ?? '')}</code></td>\n` +
         `            <td>${escapeHtml(name ?? '')}</td>\n` +
         `            <td>${escapeHtml(description ?? '')}</td>${issueCell}\n` +
         `          </tr>`
