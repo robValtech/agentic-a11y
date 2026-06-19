@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 
-import { resolve } from 'node:path';
-import { parseArgs, softAssertArg } from './helpers.mjs';
+import { parseArgs, assertArg } from './helpers.mjs';
 
 export function getFormattedRuntime(timestampStart, timestampEnd) {
   const diff = Math.abs(timestampEnd - timestampStart);
@@ -11,15 +10,14 @@ export function getFormattedRuntime(timestampStart, timestampEnd) {
   return `${mm}:${ss}`;
 }
 
-const args = parseArgs(process.argv);
-if (
-  args &&
-  assertArg(args, 'timestampStart', true) &&
-  assertArg(args, 'timestampEnd', true)
-) {
-  const timestampStart = resolve(args, 'timestampStart');
-  const timestampEnd = resolve(args, 'timestampEnd');
+if (process.argv[1] === new URL(import.meta.url).pathname) {
+  const args = parseArgs(process.argv);
+  assertArg(args, 'timestampStart');
+  assertArg(args, 'timestampEnd');
   process.stdout.write(
-    getFormattedDateTime(timestampStart, timestampEnd) + '\n',
+    getFormattedRuntime(
+      Number(args.timestampStart),
+      Number(args.timestampEnd),
+    ) + '\n',
   );
 }

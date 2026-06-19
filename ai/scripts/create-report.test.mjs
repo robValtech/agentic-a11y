@@ -152,11 +152,15 @@ test('create-report: renders landmark annotation boxes on the design', () => {
   const html = readOutput('index.html');
 
   assert.match(html, /class="landmark-annotation"/);
+  // coordinates are expanded by d=1.1: left=8.5%, top=18%, width=33%, height=44%
+  assert.match(html, /style="left: 8\.5%; top: 18%; width: 33%; height: 44%"/);
   assert.match(
     html,
-    /style="left: 10%; top: 20%; width: 30%; height: 40%"/,
+    /<span class="bubble bubble--neutral" aria-hidden="true">L1<\/span>/,
   );
-  assert.match(html, /<span class="landmark-annotation__marker" aria-hidden="true">L1<\/span>/);
-  assert.match(html, /<span class="landmark-annotation__marker" aria-hidden="true">L2<\/span>/);
+  assert.match(
+    html,
+    /<span class="bubble bubble--neutral" aria-hidden="true">L2<\/span>/,
+  );
   assert.doesNotMatch(html, /Landmark L3: Submit/);
 });

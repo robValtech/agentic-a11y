@@ -4,7 +4,10 @@ import {
   parseArgs,
   assertArg,
   LANDMARK_TAGS,
+  escapeHtml,
+  buildTableRows,
   buildLandmarkAnnotations,
+  getFormattedDate,
 } from './helpers.mjs';
 
 // ── parseArgs ─────────────────────────────────────────────────────────────────
@@ -114,12 +117,13 @@ test('buildLandmarkAnnotations: renders landmark boxes using percentage coordina
   ]);
 
   assert.match(html, /class="landmark-annotation"/);
+  // coordinates are expanded by d=1.1: left=8.5%, top=18%, width=33%, height=44%
+  assert.match(html, /style="left: 8\.5%; top: 18%; width: 33%; height: 44%"/);
   assert.match(
     html,
-    /style="left: 10%; top: 20%; width: 30%; height: 40%"/,
+    /<span class="bubble bubble--neutral" aria-hidden="true">L1<\/span>/,
   );
-  assert.match(html, /<span class="landmark-annotation__marker" aria-hidden="true">L1<\/span>/);
-  assert.match(html, /aria-label="Landmark L1: Main content"/);
+  assert.match(html, /aria-label="Landmark L1: Main content, main"/);
 });
 
 test('buildLandmarkAnnotations: escapes landmark names in aria labels', () => {
@@ -131,5 +135,138 @@ test('buildLandmarkAnnotations: escapes landmark names in aria labels', () => {
     },
   ]);
 
-  assert.match(html, /aria-label="Landmark L1: Primary &lt;nav&gt; &amp; &quot;links&quot;"/);
+  assert.match(
+    html,
+    /aria-label="Landmark L1: Primary &lt;nav&gt; &amp; &quot;links&quot;, navigation"/,
+  );
+});
+
+// ── escapeHtml ────────────────────────────────────────────────────────────────
+
+test('escapeHtml: returns plain strings unchanged', () => {
+  assert.equal(escapeHtml('hello world'), 'hello world');
+});
+
+test('escapeHtml: escapes ampersand', () => {
+  assert.equal(escapeHtml('a & b'), 'a &amp; b');
+});
+
+test('escapeHtml: escapes less-than', () => {
+  assert.equal(escapeHtml('<div>'), '&lt;div&gt;');
+});
+
+test('escapeHtml: escapes double quote', () => {
+  assert.equal(escapeHtml('"hello"'), '&quot;hello&quot;');
+});
+
+test('escapeHtml: escapes all special characters together', () => {
+  assert.equal(
+    escapeHtml('<script src="x.js">a & b</script>'),
+    '&lt;script src=&quot;x.js&quot;&gt;a &amp; b&lt;/script&gt;',
+  );
+});
+
+test('escapeHtml: coerces non-string values to string', () => {
+  assert.equal(escapeHtml(42), '42');
+});
+
+// ── buildTableRows ────────────────────────────────────────────────────────────
+
+test('buildTableRows: returns empty string for an empty array', () => {
+  assert.equal(buildTableRows([]), '');
+});
+
+test('buildTableRows: renders a row with the correct id, tag, name, and description', () => {
+  const html = buildTableRows([
+    { tag: 'nav', name: 'Main nav', description: 'Primary navigation' },
+  ]);
+  assert.match(html, /id="landmark-L1"/);
+  assert.match(html, /<code>nav<\/code>/);
+  assert.match(html, /Main nav/);
+  assert.match(html, /Primary navigation/);
+});
+
+test('buildTableRows: uses the supplied prefix for IDs', () => {
+  const html = buildTableRows(
+    [{ tag: 'button', name: 'Submit', description: '' }],
+    { prefix: 'C', rowIdPrefix: 'component' },
+  );
+  assert.match(html, /id="component-C1"/);
+  assert.match(html, /aria-label="C1"/);
+});
+
+test('buildTableRows: omits issue cell when hasIssueCol is false', () => {
+  const html = buildTableRows([
+    {
+      tag: 'main',
+      name: 'Main',
+      description: '',
+      issue: 'Missing label',
+      issueId: 'I1',
+      severity: 'high',
+    },
+  ]);
+  assert.doesNotMatch(html, /href="#issue-/);
+});
+
+test('buildTableRows: renders issue link when hasIssueCol is true and issue is present', () => {
+  const html = buildTableRows(
+    [
+      {
+        tag: 'img',
+        name: 'Logo',
+        description: '',
+        issue: 'Missing alt',
+        issueId: 'I3',
+        severity: 'critical',
+      },
+    ],
+    { hasIssueCol: true },
+  );
+  assert.match(html, /href="#issue-I3"/);
+  assert.match(html, /class="bubble bubble--critical"/);
+  assert.match(html, /aria-label="Related issue I3"/);
+});
+
+test('buildTableRows: renders a dash cell when hasIssueCol is true but no issue', () => {
+  const html = buildTableRows([{ tag: 'nav', name: 'Nav', description: '' }], {
+    hasIssueCol: true,
+  });
+  assert.match(html, /<span aria-hidden="true">-<\/span>/);
+});
+
+test('buildTableRows: escapes HTML in tag, name, and description fields', () => {
+  const html = buildTableRows([
+    { tag: '<b>', name: 'A & B', description: '"quoted"' },
+  ]);
+  assert.match(html, /&lt;b&gt;/);
+  assert.match(html, /A &amp; B/);
+  assert.match(html, /&quot;quoted&quot;/);
+});
+
+test('buildTableRows: assigns sequential IDs across multiple rows', () => {
+  const html = buildTableRows([
+    { tag: 'header', name: 'Header', description: '' },
+    { tag: 'footer', name: 'Footer', description: '' },
+  ]);
+  assert.match(html, /aria-label="L1"/);
+  assert.match(html, /aria-label="L2"/);
+});
+
+// ── getFormattedDate ──────────────────────────────────────────────────────────
+
+test('getFormattedDate: formats a given timestamp as dd/mm/yyyy hh:mm:ss', () => {
+  // Use a local-time Date to avoid timezone issues
+  const d = new Date(2024, 0, 15, 10, 30, 45); // 15 Jan 2024, 10:30:45 local
+  assert.equal(getFormattedDate(d.getTime()), '15/01/2024 10:30:45');
+});
+
+test('getFormattedDate: pads single-digit day, month, and time components', () => {
+  const d = new Date(2024, 1, 5, 9, 7, 3); // 5 Feb 2024, 09:07:03 local
+  assert.equal(getFormattedDate(d.getTime()), '05/02/2024 09:07:03');
+});
+
+test('getFormattedDate: returns a correctly formatted string when called without arguments', () => {
+  const result = getFormattedDate();
+  assert.match(result, /^\d{2}\/\d{2}\/\d{4} \d{2}:\d{2}:\d{2}$/);
 });
