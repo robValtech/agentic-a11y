@@ -45,10 +45,21 @@ function readOutput(name) {
 
 function validAnalysis() {
   return JSON.stringify({
-    meta: { keyFindings: 'KEY_FINDINGS_SENTINEL' },
+    meta: {
+      keyFindings: 'KEY_FINDINGS_SENTINEL',
+      designFile: { width: 1000, height: 500 },
+    },
     elements: [
-      { tag: 'main', name: 'Main content' },
-      { tag: 'navigation', name: 'Primary nav' },
+      {
+        tag: 'main',
+        name: 'Main content',
+        boundingBox: { x: 0.1, y: 0.2, width: 0.3, height: 0.4 },
+      },
+      {
+        tag: 'navigation',
+        name: 'Primary nav',
+        boundingBox: { x: 0.5, y: 0.1, width: 0.2, height: 0.1 },
+      },
       { tag: 'button', name: 'Submit' },
     ],
   });
@@ -132,4 +143,20 @@ test('create-report: injects keyFindings as the executive summary', () => {
   spawnScript(['--dir', TMP_DIR]);
   const html = readOutput('index.html');
   assert.match(html, /<p>KEY_FINDINGS_SENTINEL<\/p>/);
+});
+
+test('create-report: renders landmark annotation boxes on the design', () => {
+  writeAnalysis(validAnalysis());
+  writeDesign();
+  spawnScript(['--dir', TMP_DIR]);
+  const html = readOutput('index.html');
+
+  assert.match(html, /class="landmark-annotation"/);
+  assert.match(
+    html,
+    /style="left: 10%; top: 20%; width: 30%; height: 40%"/,
+  );
+  assert.match(html, /<span class="landmark-annotation__marker" aria-hidden="true">L1<\/span>/);
+  assert.match(html, /<span class="landmark-annotation__marker" aria-hidden="true">L2<\/span>/);
+  assert.doesNotMatch(html, /Landmark L3: Submit/);
 });

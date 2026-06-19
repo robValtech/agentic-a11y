@@ -1,6 +1,11 @@
 import { test, mock } from 'node:test';
 import assert from 'node:assert/strict';
-import { parseArgs, assertArg, LANDMARK_TAGS } from './helpers.mjs';
+import {
+  parseArgs,
+  assertArg,
+  LANDMARK_TAGS,
+  buildLandmarkAnnotations,
+} from './helpers.mjs';
 
 // ── parseArgs ─────────────────────────────────────────────────────────────────
 
@@ -95,4 +100,36 @@ test('LANDMARK_TAGS: contains all expected landmark roles', () => {
 test('LANDMARK_TAGS: excludes non-landmark tags', () => {
   assert.equal(LANDMARK_TAGS.has('a'), false);
   assert.equal(LANDMARK_TAGS.has('button'), false);
+});
+
+// ── buildLandmarkAnnotations ──────────────────────────────────────────────────
+
+test('buildLandmarkAnnotations: renders landmark boxes using percentage coordinates', () => {
+  const html = buildLandmarkAnnotations([
+    {
+      tag: 'main',
+      name: 'Main content',
+      boundingBox: { x: 0.1, y: 0.2, width: 0.3, height: 0.4 },
+    },
+  ]);
+
+  assert.match(html, /class="landmark-annotation"/);
+  assert.match(
+    html,
+    /style="left: 10%; top: 20%; width: 30%; height: 40%"/,
+  );
+  assert.match(html, /<span class="landmark-annotation__marker" aria-hidden="true">L1<\/span>/);
+  assert.match(html, /aria-label="Landmark L1: Main content"/);
+});
+
+test('buildLandmarkAnnotations: escapes landmark names in aria labels', () => {
+  const html = buildLandmarkAnnotations([
+    {
+      tag: 'navigation',
+      name: 'Primary <nav> & "links"',
+      boundingBox: { x: 0, y: 0, width: 1, height: 0.25 },
+    },
+  ]);
+
+  assert.match(html, /aria-label="Landmark L1: Primary &lt;nav&gt; &amp; &quot;links&quot;"/);
 });

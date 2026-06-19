@@ -90,3 +90,32 @@ export function buildTableRows(
     })
     .join('\n');
 }
+
+function toPercent(value) {
+  const number = Number(value);
+  if (!Number.isFinite(number)) {
+    return '0%';
+  }
+  return `${Number((number * 100).toFixed(3))}%`;
+}
+
+export function buildLandmarkAnnotations(landmarks) {
+  return landmarks
+    .map((landmark, index) => {
+      const id = `L${index + 1}`;
+      const { boundingBox = {}, name } = landmark;
+      const style = [
+        `left: ${toPercent(boundingBox.x)}`,
+        `top: ${toPercent(boundingBox.y)}`,
+        `width: ${toPercent(boundingBox.width)}`,
+        `height: ${toPercent(boundingBox.height)}`,
+      ].join('; ');
+
+      return (
+        `          <div class="landmark-annotation" style="${style}" aria-label="${escapeHtml(`Landmark ${id}: ${name ?? ''}`)}">\n` +
+        `            <span class="landmark-annotation__marker" aria-hidden="true">${id}</span>\n` +
+        `          </div>`
+      );
+    })
+    .join('\n');
+}

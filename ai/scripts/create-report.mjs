@@ -3,7 +3,13 @@
 import { existsSync, readFileSync, writeFileSync, copyFileSync } from 'node:fs';
 import { join, resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { parseArgs, assertArg, LANDMARK_TAGS, buildTableRows } from './helpers.mjs';
+import {
+  parseArgs,
+  assertArg,
+  LANDMARK_TAGS,
+  buildLandmarkAnnotations,
+  buildTableRows,
+} from './helpers.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const TEMPLATE_DIR = resolve(__dirname, '../templates');
@@ -42,6 +48,7 @@ const landmarkTableRows = buildTableRows(landmarks, {
   rowIdPrefix: 'landmark',
   hasIssueCol: false,
 });
+const landmarkAnnotations = buildLandmarkAnnotations(landmarks);
 const executiveSummary = `<p>${analysisData.meta.keyFindings}</p>`;
 const imageAspectRatio = `${((analysisData.meta.designFile.height / analysisData.meta.designFile.width) * 100).toFixed(2)}%`;
 
@@ -49,6 +56,7 @@ const imageAspectRatio = `${((analysisData.meta.designFile.height / analysisData
 const html = readFileSync(join(TEMPLATE_DIR, 'report.template.html'), 'utf8')
   .replace('{{ASPECT_RATIO}}', imageAspectRatio)
   .replace('{{EXECUTIVE_SUMMARY}}', executiveSummary)
+  .replace('{{LANDMARK_MARKERS}}', landmarkAnnotations)
   .replace('{{LANDMARK_TABLE_ROWS}}', landmarkTableRows)
   .replace('{{COMPONENT_TABLE_ROWS}}', '')
   .replace('href="report.template.css"', 'href="style.css"')
