@@ -138,7 +138,7 @@ a {
   color: var(--color-text);
 }
 
-.easy-read-content {
+.easy-read {
   h2,
   h3,
   h4,
@@ -158,10 +158,6 @@ a {
   table :not(:last-child) {
     margin-bottom: var(--space-md);
   }
-
-  summary > * {
-    max-width: 100%;
-  }
 }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -178,64 +174,6 @@ body {
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   margin: 0;
-}
-
-/* Details blocks */
-summary {
-  position: relative;
-  width: 100%;
-  display: block;
-  cursor: pointer;
-  anchor-name: --summary;
-
-  &::marker {
-    content: "";
-  }
-
-  &::before,
-  &::after {
-    content: "";
-    border-block-start: 3px solid var(--color-text);
-    height: 0;
-    width: 1rem;
-
-    inset-block-start: 50%;
-    inset-inline-end: 0;
-
-    position: absolute;
-    position-anchor: --summary;
-    position-area: top end;
-    transform-origin: 50%;
-
-    @media (prefers-reduced-motion: no-preference) {
-      transition: transform var(--tr-duration) ease;
-    }
-  }
-
-  &::after {
-    transform: rotate(90deg);
-  }
-
-  & + * {
-    margin-top: 1rem;
-  }
-}
-
-/* Rotate the line when open */
-details[open] summary {
-  &::after {
-    transform: rotate(0deg);
-  }
-
-  &::before {
-    transform: rotate(180deg);
-  }
-}
-
-.summary-target {
-  position: relative;
-  padding-right: 40px;
-  border-radius: var(--radius-md);
 }
 
 /* --- Visually hidden (screen reader only) --- */
@@ -277,11 +215,10 @@ details[open] summary {
 .page-header {
   background-color: var(--color-surface);
   border-bottom: 1px solid var(--color-border);
-  padding: var(--space-md) var(--space-xl);
+  padding: 0 var(--space-xl);
 }
 
 .page-header__inner {
-  max-width: var(--max-content-width);
   margin: 0 auto;
   display: flex;
   align-items: center;
@@ -318,14 +255,12 @@ details[open] summary {
 .page-footer {
   background-color: var(--color-surface);
   border-top: 1px solid var(--color-border);
-  padding: var(--space-md) var(--space-xl);
+  padding: 0 var(--space-xl);
 }
 
 .page-footer__inner {
-  max-width: var(--max-content-width);
   margin: 0 auto;
   display: flex;
-  justify-content: center;
   align-items: center;
   gap: var(--space-sm);
 }
@@ -343,58 +278,86 @@ details[open] summary {
 }
 
 /* --- Main layout --- */
-main {
-  max-width: var(--max-content-width);
-  margin: 0 auto;
-  padding: var(--space-xl) var(--space-xl) var(--space-2xl);
+.tabbed-content-layout {
+  display: grid;
+  grid-template-columns: min(20%, 300px) 1fr;
+  grid-template-rows: 1fr;
+  min-height: 100vh;
+  align-items: start;
 }
 
-/* --- Sections --- */
-.section {
+.tab-panels {
+  padding: 4rem 8rem;
+  min-height: 100vh;
+}
+
+/* --- Tab list --- */
+.tab-list {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-x: hidden;
+  overflow-y: auto;
+  border-right: 1px solid #ddd;
+  display: flex;
+  gap: 2px;
+  flex-direction: column;
+  background-color: var(--color-bg);
+}
+
+.tab {
+  display: flex;
+  padding: 1rem 2rem;
+  cursor: pointer;
+  font-size: 100%;
+  color: var(--color-text);
+  background-color: var(--color-surface-raised);
+  border: none;
+  border-left: 3px solid transparent;
+  text-align: left;
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease;
+}
+
+.tab:hover {
+  background-color: var(
+    --color-surface-hover,
+    color-mix(in srgb, var(--color-surface-raised) 80%, currentColor)
+  );
+}
+
+.tab[aria-selected="true"] {
+  font-weight: 600;
+  border-left-color: currentColor;
+  background-color: var(--color-bg);
+}
+
+.tab:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: -2px;
+}
+
+/* --- Tab panel --- */
+
+.tab-panel {
   padding-bottom: var(--space-xl);
   margin-bottom: var(--space-xl);
-  border-bottom: 1px solid var(--color-text-muted);
-
-  &:last-child {
-    margin-bottom: 0;
-    padding-bottom: 0;
-    border: none;
-  }
-
-  & > .section {
-    margin-bottom: var(--space-xl);
-    padding-bottom: var(--space-sm);
-    border: none;
-  }
-
-  & > .section:last-child {
-    margin-bottom: 0;
-    padding-bottom: 0;
-  }
 }
 
-.section--collapsible {
-  margin-bottom: var(--space-lg);
-  padding-bottom: var(--space-sm);
-
-  &[open] {
-    padding-bottom: var(--space-xl);
-  }
+.tab-panel__intro {
+  margin-bottom: 2rem;
 }
 
-.section.executive-summary {
-  font-size: 16px;
+.tab-panel__design {
+  margin-bottom: 2rem;
 }
 
-.section.executive-summary > p:not(:last-child) {
-  margin-bottom: var(--space-lg);
+.tab-panel__content {
 }
 
-.section__heading {
-  font-size: 22px;
-  font-weight: 700;
-  color: var(--color-heading);
-  margin-bottom: var(--space-lg);
+[role="tabpanel"] {
+  border-radius: var(--radius-sm);
 }
 
 /* --- Legend --- */
@@ -424,22 +387,6 @@ main {
   margin-left: auto;
   padding-left: var(--space-md);
   border-left: 1px solid var(--color-border);
-}
-
-/* --- Section toolbar (heading + controls row) --- */
-.section-toolbar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--space-md);
-  flex-wrap: wrap;
-  margin-bottom: var(--space-lg);
-}
-
-.section-toolbar .section__heading {
-  margin-bottom: 0;
-  border-bottom: none;
-  padding-bottom: 0;
 }
 
 .markers-toggle {
@@ -500,26 +447,61 @@ main {
 }
 
 /* When markers are hidden, suppress all positioned bubbles on the design */
-.design-container--markers-hidden .bubble {
+.design-container--markers-hidden .bubble,
+.design-container--markers-hidden .landmark-annotation {
   display: none;
 }
 
 /* --- Design container --- */
+.design-wrapper {
+  --design-aspect-ratio: 1.77777778;
+}
+
 .design-container {
   position: relative;
+  max-width: 1440px;
   width: 100%;
-  background: var(--color-surface-raised);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
   overflow: hidden;
+  aspect-ratio: calc(calc(var(--design-aspect-ratio) * 100) / 100);
+  background: url("design.jpg") 50% 50% no-repeat;
+  background-size: cover;
+  background-color: var(--color-surface-raised);
 }
 
-.design-image {
+.tab-list .design-container {
+  max-width: 90%;
+  margin-block: 2rem;
+  align-self: center;
+}
+
+/* --- Landmark annotations (on design image) --- */
+.landmark-annotation {
   position: absolute;
-  inset: 0;
-  background-size: contain;
-  background-repeat: no-repeat;
-  background-position: top left;
+  background: rgb(0 0 255 / 5%);
+  border: 2px dotted rgb(0 0 0 / 20%);
+  z-index: 8;
+  border-radius: 2px;
+}
+
+.landmark-annotation__marker {
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-start: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 32px;
+  min-height: 28px;
+  padding: 0 8px;
+  background: rgba(255, 0, 0, 0.9);
+  color: #fff;
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 0.02em;
 }
 
 /* --- Bubbles (on design image) --- */
@@ -588,20 +570,6 @@ a.bubble:focus-visible {
   border-bottom: 1px solid var(--color-border-subtle);
   vertical-align: middle;
   color: var(--color-text);
-}
-
-.table td:last-child {
-  text-align: center;
-}
-
-.table th:first-child,
-.table th:last-child {
-  text-align: center;
-}
-
-.table th:first-child .sort-btn,
-.table th:last-child .sort-btn {
-  justify-content: center;
 }
 
 .table tr:last-child td {
@@ -956,10 +924,6 @@ th[aria-sort="descending"] .sort-icon::after {
     gap: var(--space-xs);
   }
 
-  .section__heading {
-    font-size: 18px;
-  }
-
   .page-footer {
     padding: var(--space-md);
   }
@@ -973,24 +937,21 @@ th[aria-sort="descending"] .sort-icon::after {
 /* --- Visible keyboard focus indicator --- */
 a,
 button,
-.summary-target {
+[role="tabpanel"] {
   position: relative;
 
   &::after {
     content: "";
     display: block;
     position: absolute;
+    pointer-events: none;
     inset: -2px;
   }
 }
 
-summary:focus {
-  outline: none;
-}
-
 a:focus,
 button:focus,
-summary:focus .summary-target {
+[role="tabpanel"]:focus {
   outline: none;
 
   &::after {
@@ -1003,7 +964,7 @@ summary:focus .summary-target {
 
 a:focus:not(:focus-visible),
 button:focus:not(:focus-visible),
-summary:focus:not(:focus-visible) .summary-target {
+[role="tabpanel"]:focus:not(:focus-visible) {
   outline: none;
   box-shadow: none;
 
@@ -1014,7 +975,7 @@ summary:focus:not(:focus-visible) .summary-target {
 
 a:focus-visible,
 button:focus-visible,
-summary:focus-visible .summary-target {
+[role="tabpanel"]:focus-visible {
   &::after {
     border-radius: inherit;
     box-shadow: 0 0 0 2px var(--color-focus-ring-inner);

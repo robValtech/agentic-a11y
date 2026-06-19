@@ -105,7 +105,7 @@
     var current = document.documentElement.dataset.theme;
     var next = current === 'dark' ? 'light' : 'dark';
     document.documentElement.dataset.theme = next;
-    localStorage.setItem('a11y-report-theme', next);
+    localStorage.setItem('a11ylab-theme', next);
     updateButton(next);
     // Announce to screen readers
     status.textContent =
@@ -129,5 +129,94 @@
       ? 'Hide markers'
       : 'Show markers';
     figure.classList.toggle('design-container--markers-hidden', !next);
+  });
+})();
+
+/**
+ * Tabs
+ *
+ * Implements the WAI-ARIA tab pattern with automatic activation.
+ * Keyboard support:
+ *   ArrowRight / ArrowDown  — next tab (wraps)
+ *   ArrowLeft  / ArrowUp    — previous tab (wraps)
+ *   Home                    — first tab
+ *   End                     — last tab
+ *   Tab                     — moves focus into the active panel
+ */
+(function () {
+  var tabList = document.querySelector('[role="tablist"]');
+  if (!tabList) return;
+
+  var tabs = Array.from(tabList.querySelectorAll('[role="tab"]'));
+  if (tabs.length === 0) return;
+
+  // Restore previously active tab
+  var storedActiveTabId = document.documentElement.dataset.activeTab;
+  var storedActiveTab = document.getElementById(storedActiveTabId);
+  storedActiveTab && activateTab(storedActiveTab);
+
+  function activateTab(tab) {
+    // Deactivate all tabs and hide all panels
+    tabs.forEach(function (t) {
+      t.setAttribute('aria-selected', 'false');
+      t.setAttribute('tabindex', '-1');
+      var panelId = t.getAttribute('aria-controls');
+      var panel = panelId ? document.getElementById(panelId) : null;
+      if (panel) panel.hidden = true;
+    });
+
+    // Activate the selected tab and show its panel
+
+    tab.setAttribute('aria-selected', 'true');
+    tab.setAttribute('tabindex', '0');
+    var activeTabId = tab.getAttribute('id');
+    var activePanelId = tab.getAttribute('aria-controls');
+    var activePanel = activePanelId
+      ? document.getElementById(activePanelId)
+      : null;
+    if (activePanel) activePanel.hidden = false;
+    localStorage.setItem('a11ylab-active-tab', activeTabId);
+  }
+
+  function focusTab(tab) {
+    tab.focus();
+  }
+
+  tabs.forEach(function (tab) {
+    tab.addEventListener('click', function () {
+      activateTab(tab);
+    });
+
+    tab.addEventListener('keydown', function (event) {
+      var idx = tabs.indexOf(tab);
+      var nextTab;
+
+      switch (event.key) {
+        case 'ArrowRight':
+        case 'ArrowDown':
+          event.preventDefault();
+          nextTab = tabs[(idx + 1) % tabs.length];
+          activateTab(nextTab);
+          focusTab(nextTab);
+          break;
+        case 'ArrowLeft':
+        case 'ArrowUp':
+          event.preventDefault();
+          nextTab = tabs[(idx - 1 + tabs.length) % tabs.length];
+          activateTab(nextTab);
+          focusTab(nextTab);
+          break;
+        case 'Home':
+          event.preventDefault();
+          activateTab(tabs[0]);
+          focusTab(tabs[0]);
+          break;
+        case 'End':
+          event.preventDefault();
+          activateTab(tabs[tabs.length - 1]);
+          focusTab(tabs[tabs.length - 1]);
+          break;
+      }
+    });
   });
 })();
