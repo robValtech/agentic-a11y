@@ -1,8 +1,10 @@
 #!/usr/bin/env node
 
-import { existsSync, readFileSync, writeFileSync, copyFileSync } from 'node:fs';
+import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { join, resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { minify } from 'terser';
+import { transform as transformCss } from 'lightningcss';
 import {
   parseArgs,
   assertArg,
@@ -54,7 +56,7 @@ const landmarkAnnotations = buildLandmarkAnnotations(landmarks);
 const metaData = analysisData.meta;
 const designFile = metaData.designFile;
 const executiveSummary = `<p>${metaData.keyFindings}</p>`;
-const designAspectRatio = `${(1 / (designFile.height / designFile.width)).toFixed(2)}`;
+const designAspectRatio = `${(designFile.width / designFile.height).toFixed(6)}`;
 
 const metaDataDate = getFormattedDate(metaData.timestampEnd);
 const formattedMetaRuntime = getFormattedRuntime(
@@ -91,14 +93,32 @@ const html = readFileSync(join(TEMPLATE_DIR, 'report.template.html'), 'utf8')
   .replace('src="report.head-scripts.template.js"', 'src="head-scripts.js"')
   .replace('src="report.scripts.template.js"', 'src="scripts.js"');
 
-/* Write the final html output and copy assets */
-writeFileSync(join(dir, 'index.html'), html, 'utf8');
-copyFileSync(
-  join(TEMPLATE_DIR, 'report.head-scripts.template.js'),
-  join(dir, 'head-scripts.js'),
-);
-copyFileSync(
-  join(TEMPLATE_DIR, 'report.scripts.template.js'),
-  join(dir, 'scripts.js'),
-);
-copyFileSync(join(TEMPLATE_DIR, 'report.template.css'), join(dir, 'style.css'));
+/* Minify the HTML by stripping comments and collapsing inter-tag whitespace */
+const minifiedHtml = html
+  .replace(/<!--[\s\S]*?-->/g, '')
+  .replace(/>\s+</g, '><')
+  .trim();
+
+/* Minify the JavaScript assets with terser */
+async function minifyJs(fileName) {
+  const source = readFileSync(join(TEMPLATE_DIR, fileName), 'utf8');
+  const result = await minify(source, { compress: true, mangle: true });
+  return result.code ?? '';
+}
+
+const headScripts = await minifyJs('report.head-scripts.template.js');
+const scripts = await minifyJs('report.scripts.template.js');
+
+/* Minify the CSS with lightningcss (supports native CSS nesting) */
+const { code: cssCode } = transformCss({
+  filename: 'style.css',
+  code: readFileSync(join(TEMPLATE_DIR, 'report.template.css')),
+  minify: true,
+});
+const styles = cssCode.toString();
+
+/* Write the final html output and minified assets */
+writeFileSync(join(dir, 'index.html'), minifiedHtml, 'utf8');
+writeFileSync(join(dir, 'head-scripts.js'), headScripts, 'utf8');
+writeFileSync(join(dir, 'scripts.js'), scripts, 'utf8');
+writeFileSync(join(dir, 'style.css'), styles, 'utf8');

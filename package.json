@@ -9,6 +9,11 @@
     "make:report": "node ai/scripts/generate-report.mjs --json temp/report/input/analysis.json --image temp/report/input/design.jpg --output temp/report/output --template-dir ai/templates"
   },
   "dependencies": {
-    "ajv": "^8.17.1"
+    "ajv": "^8.17.1",
+    "sharp": "^0.35.2"
+  },
+  "devDependencies": {
+    "lightningcss": "^1.32.0",
+    "terser": "^5.48.0"
   }
 }
