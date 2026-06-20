@@ -117,12 +117,12 @@ test('buildLandmarkAnnotations: renders landmark boxes using percentage coordina
   ]);
 
   assert.match(html, /class="landmark-annotation"/);
-  // coordinates are expanded by d=1.1: left=8.5%, top=18%, width=33%, height=44%
-  assert.match(html, /style="left: 8\.5%; top: 18%; width: 33%; height: 44%"/);
+  // coordinates are expanded by d=1.01: left=9.85%, top=19.8%, width=30.3%, height=40.4%
   assert.match(
     html,
-    /<span class="bubble bubble--neutral" aria-hidden="true">L1<\/span>/,
+    /style="left: 9\.85%; top: 19\.8%; width: 30\.3%; height: 40\.4%"/,
   );
+  assert.match(html, /<span class="bubble" aria-hidden="true">L1<\/span>/);
   assert.match(html, /aria-label="Landmark L1: Main content, main"/);
 });
 
@@ -181,7 +181,7 @@ test('buildTableRows: renders a row with the correct id, tag, name, and descript
     { tag: 'nav', name: 'Main nav', description: 'Primary navigation' },
   ]);
   assert.match(html, /id="landmark-L1"/);
-  assert.match(html, /<code>nav<\/code>/);
+  assert.match(html, /<code class="inline-code">nav<\/code>/);
   assert.match(html, /Main nav/);
   assert.match(html, /Primary navigation/);
 });
