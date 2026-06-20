@@ -23,7 +23,11 @@
       "color": "terminal.ansiMagenta",
 
       "cwd": "",
-      "commands": ["npm run test:scripts", "npm run test:scripts:coverage"],
+      "commands": [
+        "npm run test:scripts",
+        "npm run test:scripts:coverage",
+        "npm run test:scripts:watch"
+      ],
       "execute": false,
 
       "persistent": "da11yrev-test",
