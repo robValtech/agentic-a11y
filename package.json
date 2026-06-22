@@ -1,6 +1,7 @@
 {
   "name": "agentic-a11y",
   "private": true,
+  "packageManager": "npm@11.9.0",
   "scripts": {
     "test:scripts": "node --test 'ai/scripts/*.test.mjs'",
     "test:scripts:watch": "node --test --watch 'ai/scripts/*.test.mjs'",
@@ -14,5 +15,9 @@
     "lightningcss": "^1.32.0",
     "terser": "^5.48.0",
     "sharp": "^0.35.2"
+  },
+  "engines": {
+    "node": ">=24 <25",
+    "npm": ">=11 <12"
   }
 }
