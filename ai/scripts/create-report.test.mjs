@@ -36,7 +36,7 @@ function writeAnalysis(content) {
 }
 
 function writeDesign() {
-  writeFileSync(join(TMP_DIR, 'design.jpg'), '', 'utf8');
+  writeFileSync(join(TMP_DIR, 'design.webp'), '', 'utf8');
 }
 
 function readOutput(name) {
@@ -85,11 +85,11 @@ test('create-report: exits 1 when analysis.json is missing', () => {
   assert.match(result.stderr, /Error: analysis.json not found/);
 });
 
-test('create-report: exits 1 when design.jpg is missing', () => {
+test('create-report: exits 1 when design.webp is missing', () => {
   writeAnalysis(validAnalysis());
   const result = spawnScript(['--dir', TMP_DIR]);
   assert.equal(result.status, 1);
-  assert.match(result.stderr, /Error: design.jpg not found/);
+  assert.match(result.stderr, /Error: design.webp not found/);
 });
 
 test('create-report: exits 0 for a valid directory', () => {

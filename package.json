@@ -6,14 +6,13 @@
     "test:scripts:watch": "node --test --watch 'ai/scripts/*.test.mjs'",
     "test:scripts:coverage": "node --experimental-test-coverage --test 'ai/scripts/*.test.mjs'",
     "validate:analysis-json": "node ai/scripts/validate-json.mjs --schema ai/schemas/a11y.analyst.schema.json",
-    "make:report": "node ai/scripts/generate-report.mjs --json temp/report/input/analysis.json --image temp/report/input/design.jpg --output temp/report/output --template-dir ai/templates"
+    "create:report": "node ai/scripts/create-report.mjs --dir temp/da11yrev-260609_171726",
+    "eval:models": "node ai/scripts/eval-models.mjs"
   },
   "dependencies": {
     "ajv": "^8.17.1",
-    "sharp": "^0.35.2"
-  },
-  "devDependencies": {
     "lightningcss": "^1.32.0",
-    "terser": "^5.48.0"
+    "terser": "^5.48.0",
+    "sharp": "^0.35.2"
   }
 }

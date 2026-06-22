@@ -36,8 +36,8 @@ try {
   process.exit(1);
 }
 
-if (!existsSync(join(dir, 'design.jpg'))) {
-  console.error('Error: design.jpg not found');
+if (!existsSync(join(dir, 'design.webp'))) {
+  console.error('Error: design.webp not found');
   process.exit(1);
 }
 

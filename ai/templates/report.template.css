@@ -410,7 +410,7 @@ body {
   border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
   aspect-ratio: var(--design-aspect-ratio);
-  background: url("design.jpg") 50% 50% no-repeat;
+  background: url("design.webp") 0% 0% no-repeat;
   background-size: cover;
   background-color: var(--color-surface-raised);
 }
