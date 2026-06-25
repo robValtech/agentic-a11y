@@ -1,33 +1,34 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "type": "object",
-  "description": "Structured accessibility analysis output for a UI screenshot, containing detected UI elements and associated accessibility issues.",
+  "description": "Structured report based on visual analysis of a UI design screenshot. The report contains semantic and structural UI objects and accessibility issues detected.",
   "required": [
     "version",
     "meta",
-    "elements"
+    "objects",
+    "issues"
   ],
   "additionalProperties": false,
   "properties": {
     "version": {
       "type": "string",
-      "const": "1.0.2",
+      "const": "1.0.3",
       "description": "Schema version. Must match the expected contract version to ensure compatibility with validation and processing logic."
     },
     "meta": {
       "$ref": "#/definitions/meta",
       "description": "Metadata describing the analysis execution and summarising key findings."
     },
-    "elements": {
+    "objects": {
       "type": "array",
-      "description": "List of UI elements detected in the screenshot. Each element represents a meaningful, user-relevant component of the interface. Accessibility issues are assigned to each UI element.",
+      "description": "List of UI objects (HTML elements, UI components, HTML landmarks, headings) detected in the screenshot. Each object represents a meaningful, user-relevant component of the interface. Accessibility issues are assigned to each UI object.",
       "items": {
-        "$ref": "#/definitions/element"
+        "$ref": "#/definitions/objects"
       }
     },
-    "flags": {
+    "issues": {
       "type": "array",
-      "description": "Global accessibility issues or low-confidence findings not tied to a specific UI element. Includes systemic issues or uncertain detections.",
+      "description": "Detected or inferred accessibility issues.",
       "items": {
         "$ref": "#/definitions/issue"
       }
@@ -97,9 +98,14 @@
         }
       }
     },
-    "element": {
+    "objectID": {
+      "type": "string",
+      "pattern": "^(lm|he|ui)_[0-9]+$",
+      "description": "Unique, incremental identifier used by other objects to reference this object. For example: he_001, he_002, he_003, lm_001, lm_002, lm_003, ui_001, ui_002, ui_003."
+    },
+    "object": {
       "type": "object",
-      "description": "A UI element detected in the image, with inferred semantics based on visual structure and accessibility best practices.",
+      "description": "A UI object (HTML elements, UI components, HTML landmarks, headings).",
       "required": [
         "tag",
         "name",
@@ -110,7 +116,7 @@
       "properties": {
         "tag": {
           "type": "string",
-          "description": "The inferred semantic HTML element or ARIA role that best represents this UI component. Must be selected from a predefined set of valid roles.",
+          "description": "The inferred semantic HTML element or ARIA role that best represents this UI object. Must be selected from a predefined set of valid roles.",
           "anyOf": [
             {
               "$ref": "#/definitions/htmlElements"
@@ -137,42 +143,38 @@
         },
         "name": {
           "type": "string",
-          "description": "Accessible name or visible label of the element as perceived by users (e.g. button text, input label, link text, region name)."
+          "description": "Accessible name or visible label of the object as perceived by users (e.g. button text, input label, link text, region name)."
         },
         "description": {
           "type": "string",
-          "description": "A concise description of the purpose of the element from the user's perspective."
+          "description": "A concise description of the purpose of the object from the user's perspective."
         },
         "boundingBox": {
           "$ref": "#/definitions/boundingBox",
-          "description": "Approximate bounding box of the element within the image, using pixel coordinates relative to the top-left corner."
+          "description": "Approximate bounding box of the object within the image, using pixel coordinates relative to the top-left corner."
         },
         "confidence": {
           "$ref": "#/definitions/confidence",
-          "description": "Represents the model's confidence that this UI element has been correctly detected and semantically classified. See ai/docs/a11y.confidence-scoring.md for confidence scoring guidelines."
+          "description": "Represents the model's confidence that this UI object has been correctly detected and semantically classified. See ai/docs/a11y.confidence-scoring.md for confidence scoring guidelines."
         },
         "id": {
-          "type": "string",
-          "description": "Unique, incremental identifier used by other elements to reference this element. For example: he_001, he_002, he_003, lm_001, lm_002, lm_003, ui_001, ui_002, ui_003."
+          "$ref": "#/definitions/objectID",
+          "description": "The unique object ID."
         },
         "contains": {
           "type": "array",
-          "description": "List of direct descendent element ids.",
+          "description": "List of direct descendent object ids.",
           "items": {
             "type": "string",
             "pattern": "^(lm|he|ui)_[0-9]+$",
-            "description": "The unique id of the element."
+            "description": "The unique id of the object."
           }
-        },
-        "issue": {
-          "$ref": "#/definitions/issue",
-          "description": "Accessibility issue associated with this element. Only included for high-confidence, impactful findings."
         }
       }
     },
     "boundingBox": {
       "type": "object",
-      "description": "Approximate bounding box of the element within the image. Coordinates are estimated based on visual analysis and should be treated as indicative rather than pixel-perfect.",
+      "description": "Approximate bounding box of the object within the image. Coordinates are estimated based on visual analysis and should be treated as indicative rather than pixel-perfect.",
       "required": [
         "x",
         "y",
@@ -185,25 +187,25 @@
           "type": "number",
           "minimum": 0,
           "maximum": 1,
-          "description": "Horizontal position from the top edge of the image to the top-left corner of the element. Percentage value relative to the width of the image."
+          "description": "Horizontal position from the top edge of the image to the top-left corner of the object. Percentage value relative to the width of the image."
         },
         "y": {
           "type": "number",
           "minimum": 0,
           "maximum": 1,
-          "description": "Vertical position from the top edge of the image to the top-left corner of the element. Percentage value relative to the height of the image."
+          "description": "Vertical position from the top edge of the image to the top-left corner of the object. Percentage value relative to the height of the image."
         },
         "width": {
           "type": "number",
           "minimum": 0,
           "maximum": 1,
-          "description": "Approximate width of the element in percentage relative to the width of the image."
+          "description": "Approximate width of the object in percentage relative to the width of the image."
         },
         "height": {
           "type": "number",
           "minimum": 0,
           "maximum": 1,
-          "description": "Approximate height of the element in percentage relative to the height of the image."
+          "description": "Approximate height of the object in percentage relative to the height of the image."
         }
       }
     },
@@ -254,6 +256,10 @@
         "confidence": {
           "$ref": "#/definitions/confidence",
           "description": "Represents the model's confidence that this accessibility issue is present and correctly mapped to the specified WCAG criteria. See ai/docs/a11y.confidence-scoring.md for confidence scoring guidelines."
+        },
+        "objectID": {
+          "$ref": "#/definitions/objectID",
+          "description": "The object ID this issue relates to. When not specified, the issue is considered to be more generic."
         }
       }
     },
