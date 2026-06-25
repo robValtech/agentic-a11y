@@ -8,10 +8,13 @@ import { transform as transformCss } from 'lightningcss';
 import {
   parseArgs,
   assertArg,
+  OBJECT_ID_PREFIXES,
   LANDMARK_TAGS,
-  buildElementAnnotations,
+  buildObjectAnnotations,
   buildTableRows,
+  buildIssueCards,
   getFormattedDate,
+  getObjectsByObjectIdPrefix,
 } from './helpers.mjs';
 import { getFormattedRuntime } from './get-formatted-runtime.mjs';
 
@@ -43,10 +46,22 @@ if (!existsSync(join(dir, 'design.webp'))) {
 
 /* Read and prepare the report data */
 const analysisData = JSON.parse(analysisRaw);
-const elements = Array.isArray(analysisData.elements)
-  ? analysisData.elements
+const uiObjects = Array.isArray(analysisData.objects)
+  ? analysisData.objects
   : [];
-const landmarks = elements.filter((element) => LANDMARK_TAGS.has(element.tag));
+const a11yIssues = Array.isArray(analysisData.issues)
+  ? analysisData.issues
+  : [];
+const a11yIssueAnnotations = buildObjectAnnotations(a11yIssues, {
+  prefix: '',
+  typeLabel: 'Issue',
+});
+
+// Landmarks
+const landmarks = getObjectsByObjectIdPrefix(
+  uiObjects,
+  OBJECT_ID_PREFIXES.landmark,
+);
 const landmarkIdMap = new Map(
   landmarks.filter((el) => el.id).map((el, i) => [el.id, `${i + 1}`]),
 );
@@ -56,20 +71,41 @@ const landmarkTableRows = buildTableRows(landmarks, {
   hasIssueCol: false,
   containsIdMap: landmarkIdMap,
 });
-const landmarkAnnotations = buildElementAnnotations(landmarks, {
+const landmarkAnnotations = buildObjectAnnotations(landmarks, {
   prefix: '',
   typeLabel: 'Landmark',
 });
-const headings = elements.filter((element) => element.tag === 'heading');
+
+// Headings
+const headings = getObjectsByObjectIdPrefix(
+  uiObjects,
+  OBJECT_ID_PREFIXES.heading,
+);
 const headingTableRows = buildTableRows(headings, {
   prefix: '',
   rowIdPrefix: 'heading',
   hasIssueCol: false,
 });
-const headingAnnotations = buildElementAnnotations(headings, {
+const headingAnnotations = buildObjectAnnotations(headings, {
   prefix: '',
   typeLabel: 'Heading',
 });
+
+// UI Components
+const uiComponents = getObjectsByObjectIdPrefix(
+  uiObjects,
+  OBJECT_ID_PREFIXES.uiComponent,
+);
+const uiComponentTableRows = buildTableRows(uiComponents, {
+  prefix: '',
+  rowIdPrefix: 'ui-component',
+  hasIssueCol: false,
+});
+const uiComponentAnnotations = buildObjectAnnotations(uiComponents, {
+  prefix: '',
+  typeLabel: 'Component',
+});
+
 const metaData = analysisData.meta;
 const designFile = metaData.designFile;
 const executiveSummary = `<p>${metaData.keyFindings}</p>`;
@@ -92,11 +128,11 @@ const html = readFileSync(join(TEMPLATE_DIR, 'report.template.html'), 'utf8')
   .replace('{{HEADING_MARKERS}}', headingAnnotations)
   .replace('{{HEADING_TABLE_ROWS}}', headingTableRows)
   // UI Components
-  .replace('{{UI_COMPONENT_TABLE_ROWS}}', '')
-  .replace('{{UI_COMPONENT_MARKERS}}', '')
+  .replace('{{UI_COMPONENT_TABLE_ROWS}}', uiComponentTableRows)
+  .replace('{{UI_COMPONENT_MARKERS}}', uiComponentAnnotations)
   // A11Y Issues
-  .replace('{{A11Y_ISSUE_MARKERS}}', '')
-  .replace('{{A11Y_ISSUES}}', '')
+  .replace('{{A11Y_ISSUE_MARKERS}}', a11yIssueAnnotations)
+  .replace('{{A11Y_ISSUES}}', buildIssueCards(a11yIssues, uiObjects))
   // A11Y Flags
   .replace('{{A11Y_FLAG_MARKERS}}', '')
   .replace('{{A11Y_FLAGS}}', '')

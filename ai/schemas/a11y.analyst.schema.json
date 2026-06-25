@@ -23,7 +23,7 @@
       "type": "array",
       "description": "List of UI objects (HTML elements, UI components, HTML landmarks, headings) detected in the screenshot. Each object represents a meaningful, user-relevant component of the interface. Accessibility issues are assigned to each UI object.",
       "items": {
-        "$ref": "#/definitions/objects"
+        "$ref": "#/definitions/object"
       }
     },
     "issues": {

@@ -35,6 +35,11 @@
   --severity-medium-text: #111800;
   --severity-medium-label: #e8ff80;
 
+  --severity-low-bg: #0099ff;
+  --severity-low-border: #4eb8ff;
+  --severity-low-text: #111800;
+  --severity-low-label: #111800;
+
   --severity-neutral-bg: #222222;
   --severity-neutral-border: #000000;
   --severity-neutral-text: #efefef;
@@ -735,6 +740,11 @@ th[aria-sort="descending"] .sort-icon::after {
   color: var(--severity-medium-text);
 }
 
+.badge--low {
+  background: var(--severity-low-bg);
+  color: var(--severity-low-text);
+}
+
 .issue-card__title {
   font-size: 16px;
   font-weight: 600;
@@ -821,6 +831,11 @@ th[aria-sort="descending"] .sort-icon::after {
   background: var(--severity-medium-bg);
   border-color: var(--severity-medium-border);
   color: var(--severity-medium-text);
+}
+.bubble--low {
+  background: var(--severity-low-bg);
+  border-color: var(--severity-low-border);
+  color: var(--severity-low-text);
 }
 
 /* --- Reduced motion --- */
