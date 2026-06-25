@@ -44,10 +44,10 @@
   --color-bubble-default-border: #0d0f1a;
   --color-bubble-default-text: var(--color-bubble-default-border);
   --color-bubble-default-text-hover: #ffffff;
-  --color-landmark-annotation-bg--rgb: 0, 255, 0;
-  --color-landmark-annotation-border--rgb: 255, 255, 255;
-  --color-landmark-annotation-text: var(--color-bubble-default-text);
-  --color-landmark-annotation-text-hover: var(--color-bubble-default-text);
+  --color-element-annotation-bg--rgb: 0, 255, 0;
+  --color-element-annotation-border--rgb: 255, 255, 255;
+  --color-element-annotation-text: var(--color-bubble-default-text);
+  --color-element-annotation-text-hover: var(--color-bubble-default-text);
 
   --font-sans:
     -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial,
@@ -140,11 +140,11 @@
   --color-bubble-default-border: #1c1f35;
   --color-bubble-default-text: #efefef;
   --color-bubble-default-text-hover: #ffffff;
-  --color-landmark-annotation-bg--rgb: 0, 255, 0;
-  --color-landmark-annotation-border--rgb: 0, 0, 0;
-  --color-landmark-annotation-text--rgb: 0, 0, 0;
-  --color-landmark-annotation-text-hover: var(
-    --color-landmark-annotation-text--rgb
+  --color-element-annotation-bg--rgb: 0, 255, 0;
+  --color-element-annotation-border--rgb: 0, 0, 0;
+  --color-element-annotation-text--rgb: 0, 0, 0;
+  --color-element-annotation-text-hover: var(
+    --color-element-annotation-text--rgb
   );
 }
 
@@ -384,7 +384,7 @@ body {
 
 /* When markers are hidden, suppress all positioned bubbles on the design */
 .design-container--markers-hidden .bubble,
-.design-container--markers-hidden .landmark-annotation {
+.design-container--markers-hidden .element-annotation {
   display: none;
 }
 
@@ -497,11 +497,11 @@ body {
   background-color: var(--color-bg);
 }
 
-/* --- Landmark annotations (on design image) --- */
-.landmark-annotation {
+/* --- Element annotations (on design image) --- */
+.element-annotation {
   position: absolute;
-  background-color: rgba(var(--color-landmark-annotation-bg--rgb), 0.3);
-  border: 1px dashed rgba(var(--color-landmark-annotation-border--rgb), 0.7);
+  background-color: rgba(var(--color-element-annotation-bg--rgb), 0.3);
+  border: 1px dashed rgba(var(--color-element-annotation-border--rgb), 0.7);
   z-index: 8;
   border-radius: var(--radius-sm);
   transition:
@@ -511,13 +511,13 @@ body {
 
   &:hover {
     transform: scale(1.005);
-    background-color: rgba(var(--color-landmark-annotation-bg--rgb), 0.6);
-    border-color: rgba(var(--color-landmark-annotation-border--rgb), 1);
+    background-color: rgba(var(--color-element-annotation-bg--rgb), 0.6);
+    border-color: rgba(var(--color-element-annotation-border--rgb), 1);
 
     .bubble {
       transform: translate(-50%, -50%) scale(1.2);
-      background-color: rgb(var(--color-landmark-annotation-bg--rgb));
-      color: var(--color-landmark-annotation-text-hover);
+      background-color: rgb(var(--color-element-annotation-bg--rgb));
+      color: var(--color-element-annotation-text-hover);
     }
   }
 }

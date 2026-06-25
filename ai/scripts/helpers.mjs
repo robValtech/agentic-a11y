@@ -68,12 +68,17 @@ export function escapeHtml(str) {
 // ---------------------------------------------------------------------------
 export function buildTableRows(
   elements,
-  { prefix = 'L', rowIdPrefix = 'landmark', hasIssueCol = false } = {},
+  {
+    prefix = '',
+    rowIdPrefix = '',
+    hasIssueCol = false,
+    containsIdMap = null,
+  } = {},
 ) {
   return elements
     .map((el, i) => {
       const id = `${prefix}${i + 1}`;
-      const { tag, name, description, issue, issueId, severity } = el;
+      const { tag, name, description, issue, issueId, severity, contains } = el;
       const sortTag = escapeHtml(tag ?? '');
       const sortIssue = issue ? (severity ?? 'medium') : 'none';
 
@@ -85,12 +90,29 @@ export function buildTableRows(
         issueCell = `\n            <td>${issueBubble}</td>`;
       }
 
+      let containsCell = '';
+      if (containsIdMap !== null) {
+        const bubbles =
+          Array.isArray(contains) && contains.length > 0
+            ? contains
+                .map((schemaId) => {
+                  const visualId = containsIdMap.get(schemaId);
+                  return visualId
+                    ? `<span class="bubble" aria-label="${visualId}">${visualId}</span>`
+                    : '';
+                })
+                .filter(Boolean)
+                .join(' ')
+            : '';
+        containsCell = `\n            <td>${bubbles}</td>`;
+      }
+
       return (
         `          <tr id="${rowIdPrefix}-${id}" data-sort-id="${i + 1}" data-sort-tag="${sortTag}" data-sort-issue="${sortIssue}">\n` +
         `            <td><span class="bubble" aria-label="${id}">${id}</span></td>\n` +
         `            <td><code class="inline-code">${escapeHtml(tag ?? '')}</code></td>\n` +
         `            <td>${escapeHtml(name ?? '')}</td>\n` +
-        `            <td>${escapeHtml(description ?? '')}</td>${issueCell}\n` +
+        `            <td>${escapeHtml(description ?? '')}</td>${issueCell}${containsCell}\n` +
         `          </tr>`
       );
     })
@@ -105,11 +127,14 @@ function toPercent(value) {
   return `${Number((number * 100).toFixed(3))}%`;
 }
 
-export function buildLandmarkAnnotations(landmarks) {
-  return landmarks
-    .map((landmark, index) => {
-      const id = `L${index + 1}`;
-      const { boundingBox = {}, name } = landmark;
+export function buildElementAnnotations(
+  elements,
+  { prefix = '', typeLabel = '' } = {},
+) {
+  return elements
+    .map((element, index) => {
+      const id = `${prefix}${index + 1}`;
+      const { boundingBox = {}, name } = element;
 
       const d = 1.01;
       const width = toPercent(boundingBox.width * d);
@@ -124,8 +149,10 @@ export function buildLandmarkAnnotations(landmarks) {
         `height: ${height}`,
       ].join('; ');
 
+      const className = `element-annotation element-annotation--${typeLabel.toLowerCase()}`;
+
       return (
-        `          <div class="landmark-annotation" style="${style}" aria-label="${escapeHtml(`Landmark ${id}: ${name ?? ''}, ${landmark.tag}`)}">\n` +
+        `          <div class="${className}" style="${style}" aria-label="${escapeHtml(`${typeLabel} ${id}: ${name ?? ''}, ${element.tag}`)}">\n` +
         `            <span class="bubble" aria-hidden="true">${id}</span>\n` +
         `          </div>`
       );

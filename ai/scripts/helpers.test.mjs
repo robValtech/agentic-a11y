@@ -6,7 +6,7 @@ import {
   LANDMARK_TAGS,
   escapeHtml,
   buildTableRows,
-  buildLandmarkAnnotations,
+  buildElementAnnotations,
   getFormattedDate,
 } from './helpers.mjs';
 
@@ -105,10 +105,10 @@ test('LANDMARK_TAGS: excludes non-landmark tags', () => {
   assert.equal(LANDMARK_TAGS.has('button'), false);
 });
 
-// ── buildLandmarkAnnotations ──────────────────────────────────────────────────
+// ── buildElementAnnotations ──────────────────────────────────────────────────
 
-test('buildLandmarkAnnotations: renders landmark boxes using percentage coordinates', () => {
-  const html = buildLandmarkAnnotations([
+test('buildElementAnnotations: renders landmark boxes using percentage coordinates', () => {
+  const html = buildElementAnnotations([
     {
       tag: 'main',
       name: 'Main content',
@@ -116,7 +116,7 @@ test('buildLandmarkAnnotations: renders landmark boxes using percentage coordina
     },
   ]);
 
-  assert.match(html, /class="landmark-annotation"/);
+  assert.match(html, /class="element-annotation element-annotation--landmark"/);
   // coordinates are expanded by d=1.01: left=9.85%, top=19.8%, width=30.3%, height=40.4%
   assert.match(
     html,
@@ -126,8 +126,8 @@ test('buildLandmarkAnnotations: renders landmark boxes using percentage coordina
   assert.match(html, /aria-label="Landmark L1: Main content, main"/);
 });
 
-test('buildLandmarkAnnotations: escapes landmark names in aria labels', () => {
-  const html = buildLandmarkAnnotations([
+test('buildElementAnnotations: escapes landmark names in aria labels', () => {
+  const html = buildElementAnnotations([
     {
       tag: 'navigation',
       name: 'Primary <nav> & "links"',
@@ -251,6 +251,39 @@ test('buildTableRows: assigns sequential IDs across multiple rows', () => {
   ]);
   assert.match(html, /aria-label="L1"/);
   assert.match(html, /aria-label="L2"/);
+});
+
+test('buildTableRows: renders contains bubbles when containsIdMap is provided and contains is populated', () => {
+  const idMap = new Map([['lm_002', 'L2']]);
+  const html = buildTableRows(
+    [
+      {
+        tag: 'banner',
+        name: 'Header',
+        description: '',
+        contains: ['lm_002'],
+      },
+    ],
+    { containsIdMap: idMap },
+  );
+  assert.match(html, /aria-label="L2"/);
+  assert.match(html, />L2<\/span>/);
+});
+
+test('buildTableRows: renders empty contains cell when contains array is empty', () => {
+  const idMap = new Map();
+  const html = buildTableRows(
+    [{ tag: 'main', name: 'Main', description: '', contains: [] }],
+    { containsIdMap: idMap },
+  );
+  assert.match(html, /<td><\/td>/);
+});
+
+test('buildTableRows: omits contains cell when containsIdMap is not provided', () => {
+  const html = buildTableRows([
+    { tag: 'nav', name: 'Nav', description: '', contains: ['lm_001'] },
+  ]);
+  assert.doesNotMatch(html, /lm_001/);
 });
 
 // ── getFormattedDate ──────────────────────────────────────────────────────────

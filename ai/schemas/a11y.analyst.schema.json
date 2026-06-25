@@ -11,7 +11,7 @@
   "properties": {
     "version": {
       "type": "string",
-      "const": "1.0.1",
+      "const": "1.0.2",
       "description": "Schema version. Must match the expected contract version to ensure compatibility with validation and processing logic."
     },
     "meta": {
@@ -150,6 +150,19 @@
         "confidence": {
           "$ref": "#/definitions/confidence",
           "description": "Represents the model's confidence that this UI element has been correctly detected and semantically classified. See ai/docs/a11y.confidence-scoring.md for confidence scoring guidelines."
+        },
+        "id": {
+          "type": "string",
+          "description": "Unique, incremental identifier used by other elements to reference this element. For example: he_001, he_002, he_003, lm_001, lm_002, lm_003, ui_001, ui_002, ui_003."
+        },
+        "contains": {
+          "type": "array",
+          "description": "List of direct descendent element ids.",
+          "items": {
+            "type": "string",
+            "pattern": "^(lm|he|ui)_[0-9]+$",
+            "description": "The unique id of the element."
+          }
         },
         "issue": {
           "$ref": "#/definitions/issue",

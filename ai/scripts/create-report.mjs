@@ -9,7 +9,7 @@ import {
   parseArgs,
   assertArg,
   LANDMARK_TAGS,
-  buildLandmarkAnnotations,
+  buildElementAnnotations,
   buildTableRows,
   getFormattedDate,
 } from './helpers.mjs';
@@ -47,12 +47,29 @@ const elements = Array.isArray(analysisData.elements)
   ? analysisData.elements
   : [];
 const landmarks = elements.filter((element) => LANDMARK_TAGS.has(element.tag));
+const landmarkIdMap = new Map(
+  landmarks.filter((el) => el.id).map((el, i) => [el.id, `${i + 1}`]),
+);
 const landmarkTableRows = buildTableRows(landmarks, {
-  prefix: 'L',
+  prefix: '',
   rowIdPrefix: 'landmark',
   hasIssueCol: false,
+  containsIdMap: landmarkIdMap,
 });
-const landmarkAnnotations = buildLandmarkAnnotations(landmarks);
+const landmarkAnnotations = buildElementAnnotations(landmarks, {
+  prefix: '',
+  typeLabel: 'Landmark',
+});
+const headings = elements.filter((element) => element.tag === 'heading');
+const headingTableRows = buildTableRows(headings, {
+  prefix: '',
+  rowIdPrefix: 'heading',
+  hasIssueCol: false,
+});
+const headingAnnotations = buildElementAnnotations(headings, {
+  prefix: '',
+  typeLabel: 'Heading',
+});
 const metaData = analysisData.meta;
 const designFile = metaData.designFile;
 const executiveSummary = `<p>${metaData.keyFindings}</p>`;
@@ -71,6 +88,9 @@ const html = readFileSync(join(TEMPLATE_DIR, 'report.template.html'), 'utf8')
   // Landmarks
   .replace('{{LANDMARK_MARKERS}}', landmarkAnnotations)
   .replace('{{LANDMARK_TABLE_ROWS}}', landmarkTableRows)
+  // Headings
+  .replace('{{HEADING_MARKERS}}', headingAnnotations)
+  .replace('{{HEADING_TABLE_ROWS}}', headingTableRows)
   // UI Components
   .replace('{{UI_COMPONENT_TABLE_ROWS}}', '')
   .replace('{{UI_COMPONENT_MARKERS}}', '')
@@ -83,6 +103,8 @@ const html = readFileSync(join(TEMPLATE_DIR, 'report.template.html'), 'utf8')
   // Metadata
   .replace('{{METADATA_DATE}}', metaDataDate)
   .replaceAll('{{METADATA_FILE_NAME}}', designFile.name)
+  .replaceAll('{{METADATA_DESIGN_WIDTH}}', designFile.width)
+  .replaceAll('{{METADATA_DESIGN_HEIGHT}}', designFile.height)
   .replace('{{METADATA_ANALYST}}', metaData.modelName)
   .replace('{{METADATA_PROMPT}}', metaData.prompt)
   .replace('{{METADATA_RUNTIME}}', formattedMetaRuntime)

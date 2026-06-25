@@ -151,7 +151,7 @@ test('create-report: renders landmark annotation boxes on the design', () => {
   spawnScript(['--dir', TMP_DIR]);
   const html = readOutput('index.html');
 
-  assert.match(html, /class="landmark-annotation"/);
+  assert.match(html, /class="element-annotation"/);
   // coordinates are expanded by d=1.01: left=9.85%, top=19.8%, width=30.3%, height=40.4%
   assert.match(
     html,
