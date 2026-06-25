@@ -6,8 +6,9 @@ import {
   LANDMARK_TAGS,
   escapeHtml,
   buildTableRows,
-  buildElementAnnotations,
+  buildObjectAnnotations as buildElementAnnotations,
   getFormattedDate,
+  getConfidenceLevel,
 } from './helpers.mjs';
 
 // ── parseArgs ─────────────────────────────────────────────────────────────────
@@ -108,13 +109,16 @@ test('LANDMARK_TAGS: excludes non-landmark tags', () => {
 // ── buildElementAnnotations ──────────────────────────────────────────────────
 
 test('buildElementAnnotations: renders landmark boxes using percentage coordinates', () => {
-  const html = buildElementAnnotations([
-    {
-      tag: 'main',
-      name: 'Main content',
-      boundingBox: { x: 0.1, y: 0.2, width: 0.3, height: 0.4 },
-    },
-  ]);
+  const html = buildElementAnnotations(
+    [
+      {
+        tag: 'main',
+        name: 'Main content',
+        boundingBox: { x: 0.1, y: 0.2, width: 0.3, height: 0.4 },
+      },
+    ],
+    { prefix: 'L', typeLabel: 'Landmark' },
+  );
 
   assert.match(html, /class="element-annotation element-annotation--landmark"/);
   // coordinates are expanded by d=1.01: left=9.85%, top=19.8%, width=30.3%, height=40.4%
@@ -127,13 +131,16 @@ test('buildElementAnnotations: renders landmark boxes using percentage coordinat
 });
 
 test('buildElementAnnotations: escapes landmark names in aria labels', () => {
-  const html = buildElementAnnotations([
-    {
-      tag: 'navigation',
-      name: 'Primary <nav> & "links"',
-      boundingBox: { x: 0, y: 0, width: 1, height: 0.25 },
-    },
-  ]);
+  const html = buildElementAnnotations(
+    [
+      {
+        tag: 'navigation',
+        name: 'Primary <nav> & "links"',
+        boundingBox: { x: 0, y: 0, width: 1, height: 0.25 },
+      },
+    ],
+    { prefix: 'L', typeLabel: 'Landmark' },
+  );
 
   assert.match(
     html,
@@ -177,9 +184,10 @@ test('buildTableRows: returns empty string for an empty array', () => {
 });
 
 test('buildTableRows: renders a row with the correct id, tag, name, and description', () => {
-  const html = buildTableRows([
-    { tag: 'nav', name: 'Main nav', description: 'Primary navigation' },
-  ]);
+  const html = buildTableRows(
+    [{ tag: 'nav', name: 'Main nav', description: 'Primary navigation' }],
+    { prefix: 'L', rowIdPrefix: 'landmark' },
+  );
   assert.match(html, /id="landmark-L1"/);
   assert.match(html, /<code class="inline-code">nav<\/code>/);
   assert.match(html, /Main nav/);
@@ -245,10 +253,13 @@ test('buildTableRows: escapes HTML in tag, name, and description fields', () => 
 });
 
 test('buildTableRows: assigns sequential IDs across multiple rows', () => {
-  const html = buildTableRows([
-    { tag: 'header', name: 'Header', description: '' },
-    { tag: 'footer', name: 'Footer', description: '' },
-  ]);
+  const html = buildTableRows(
+    [
+      { tag: 'header', name: 'Header', description: '' },
+      { tag: 'footer', name: 'Footer', description: '' },
+    ],
+    { prefix: 'L' },
+  );
   assert.match(html, /aria-label="L1"/);
   assert.match(html, /aria-label="L2"/);
 });
@@ -284,6 +295,52 @@ test('buildTableRows: omits contains cell when containsIdMap is not provided', (
     { tag: 'nav', name: 'Nav', description: '', contains: ['lm_001'] },
   ]);
   assert.doesNotMatch(html, /lm_001/);
+});
+
+// ── getConfidenceLevel ────────────────────────────────────────────────────────
+
+test('getConfidenceLevel: returns "Very low" for 0', () => {
+  assert.equal(getConfidenceLevel(0).label, 'Very low');
+});
+
+test('getConfidenceLevel: returns "Very low" at the 0.4 boundary', () => {
+  assert.equal(getConfidenceLevel(0.4).label, 'Very low');
+});
+
+test('getConfidenceLevel: returns "Low" just above 0.4', () => {
+  assert.equal(getConfidenceLevel(0.41).label, 'Low');
+});
+
+test('getConfidenceLevel: returns "Low" at the 0.6 boundary', () => {
+  assert.equal(getConfidenceLevel(0.6).label, 'Low');
+});
+
+test('getConfidenceLevel: returns "Moderate" just above 0.6', () => {
+  assert.equal(getConfidenceLevel(0.61).label, 'Moderate');
+});
+
+test('getConfidenceLevel: returns "Moderate" at the 0.75 boundary', () => {
+  assert.equal(getConfidenceLevel(0.75).label, 'Moderate');
+});
+
+test('getConfidenceLevel: returns "High" just above 0.75', () => {
+  assert.equal(getConfidenceLevel(0.76).label, 'High');
+});
+
+test('getConfidenceLevel: returns "High" at the 0.9 boundary', () => {
+  assert.equal(getConfidenceLevel(0.9).label, 'High');
+});
+
+test('getConfidenceLevel: returns "Very high" just above 0.9', () => {
+  assert.equal(getConfidenceLevel(0.91).label, 'Very high');
+});
+
+test('getConfidenceLevel: returns "Very high" at 1.0', () => {
+  assert.equal(getConfidenceLevel(1).label, 'Very high');
+});
+
+test('getConfidenceLevel: falls back to "Very low" for out-of-range values above 1', () => {
+  assert.equal(getConfidenceLevel(1.5).label, 'Very low');
 });
 
 // ── getFormattedDate ──────────────────────────────────────────────────────────

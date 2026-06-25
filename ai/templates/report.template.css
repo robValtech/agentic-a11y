@@ -617,7 +617,12 @@ a.bubble:focus-visible {
   transform: none;
   cursor: default;
   flex-shrink: 0;
-  margin: 0 auto;
+}
+
+.table .bubble-container {
+  display: flex;
+  justify-content: flex-end;
+  gap: 2px;
 }
 
 .table a.bubble {
@@ -709,7 +714,7 @@ th[aria-sort="descending"] .sort-icon::after {
 
 .issue-card__header {
   display: flex;
-  align-items: baseline;
+  justify-content: space-between;
   gap: var(--space-md);
   padding: var(--space-md) var(--space-lg);
   background: var(--color-surface-raised);
@@ -750,39 +755,43 @@ th[aria-sort="descending"] .sort-icon::after {
   font-weight: 600;
   color: var(--color-heading);
   flex: 1;
+  margin-top: 0.5rem;
 }
 
-.issue-card__wcag-wrapper {
+.issue-card__detail {
   display: flex;
   align-items: baseline;
   gap: var(--space-xs, 4px);
   margin-left: auto;
   flex-wrap: wrap;
+  font-size: 12px;
 }
 
-.issue-card__wcag-label {
-  font-size: 12px;
+.issue-card__detail-title {
   font-weight: 700;
   color: var(--color-text-muted);
   white-space: nowrap;
   flex-shrink: 0;
 }
 
-.issue-card__wcag {
+.issue-card__detail-value {
   list-style: none;
   display: flex;
   gap: var(--space-sm);
   flex-wrap: wrap;
+  padding-left: 0.4rem;
+  margin-top: 0.5rem;
+  text-transform: capitalize;
 }
 
-.issue-card__wcag a {
+.issue-card__detail-value a {
   font-size: 12px;
   color: var(--color-accent);
   text-decoration: none;
   border-radius: var(--radius-xs);
 }
 
-.issue-card__wcag a:hover {
+.issue-card__detail-value a:hover {
   text-decoration: underline;
 }
 

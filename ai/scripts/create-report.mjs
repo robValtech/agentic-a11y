@@ -8,14 +8,13 @@ import { transform as transformCss } from 'lightningcss';
 import {
   parseArgs,
   assertArg,
-  OBJECT_ID_PREFIXES,
-  LANDMARK_TAGS,
   buildObjectAnnotations,
   buildTableRows,
   buildIssueCards,
   getFormattedDate,
   getObjectsByObjectIdPrefix,
 } from './helpers.mjs';
+import { OBJECT_ID_PREFIXES } from './constants.mjs';
 import { getFormattedRuntime } from './get-formatted-runtime.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -133,9 +132,6 @@ const html = readFileSync(join(TEMPLATE_DIR, 'report.template.html'), 'utf8')
   // A11Y Issues
   .replace('{{A11Y_ISSUE_MARKERS}}', a11yIssueAnnotations)
   .replace('{{A11Y_ISSUES}}', buildIssueCards(a11yIssues, uiObjects))
-  // A11Y Flags
-  .replace('{{A11Y_FLAG_MARKERS}}', '')
-  .replace('{{A11Y_FLAGS}}', '')
   // Metadata
   .replace('{{METADATA_DATE}}', metaDataDate)
   .replaceAll('{{METADATA_FILE_NAME}}', designFile.name)

@@ -141,19 +141,6 @@
               <span aria-hidden="true">🚧</span>
               <span class="sr-only"> (coming soon)</span>
             </button>
-            <button
-              type="button"
-              role="tab"
-              id="tab-a11y-flags"
-              aria-controls="panel-a11y-flags"
-              aria-selected="false"
-              tabindex="-1"
-              class="tab"
-            >
-              <span>Accessibility flags</span>
-              <span aria-hidden="true">🚧</span>
-              <span class="sr-only"> (coming soon)</span>
-            </button>
           </div>
 
           <div class="sidebar__footer">
@@ -720,40 +707,6 @@
             </div>
 
             <div class="tab-panel__content">{{A11Y_ISSUES}}</div>
-          </div>
-
-          <div
-            role="tabpanel"
-            class="tab-panel"
-            id="panel-a11y-flags"
-            aria-labelledby="tab-a11y-flags"
-            hidden
-          >
-            <div class="tab-panel__intro easy-read">
-              <h2 class="tab-panel__heading">Accessibility flags</h2>
-              <p>
-                Issues with low confidence score are listed in this section Low
-                confidence issues that are still worth checking can be
-                potentially missing <strong>focus state</strong> or
-                <strong>visual icons</strong> possibly left exposed to screen
-                reader users.
-              </p>
-            </div>
-
-            <div class="tab-panel__design">
-              <div class="design-container-wrapper">
-                <figure class="design-container" id="design-a11y-flags">
-                  <figcaption class="sr-only">
-                    Annotated design screenshot of {{METADATA_FILE_NAME}} with
-                    visual indicators highlighting potential accessibility
-                    issues.
-                  </figcaption>
-                  {{A11Y_FLAG_MARKERS}}
-                </figure>
-              </div>
-            </div>
-
-            <div class="tab-panel__content">{{A11Y_FLAGS}}</div>
           </div>
         </div>
       </div>
