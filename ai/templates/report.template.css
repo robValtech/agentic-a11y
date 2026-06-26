@@ -560,6 +560,27 @@ body {
     transform-origin: 50% 50%;
   }
 
+  .object-annotation__bubble {
+    top: var(--top);
+    left: var(--left);
+  }
+
+  .object-annotation__box {
+    position: absolute;
+    display: block;
+    top: var(--top);
+    left: var(--left);
+    width: var(--width);
+    height: var(--height);
+    background-color: rgba(var(--color-object-annotation-bg--rgb), 0.3);
+    border: 1px dashed rgba(var(--color-object-annotation-border--rgb), 0.7);
+    border-radius: var(--radius-sm);
+    transition:
+      background-color var(--tr-duration) ease,
+      border-color var(--tr-duration) ease,
+      transform var(--tr-duration) ease;
+  }
+
   &:has(.object-annotation__box:hover),
   &:has(.object-annotation__bubble:hover) {
     .object-annotation__box {
@@ -576,25 +597,8 @@ body {
   }
 }
 
-.object-annotation__bubble {
-  top: var(--top);
-  left: var(--left);
-}
-
-.object-annotation__box {
-  position: absolute;
-  display: block;
-  top: var(--top);
-  left: var(--left);
-  width: var(--width);
-  height: var(--height);
-  background-color: rgba(var(--color-object-annotation-bg--rgb), 0.3);
-  border: 1px dashed rgba(var(--color-object-annotation-border--rgb), 0.7);
-  border-radius: var(--radius-sm);
-  transition:
-    background-color var(--tr-duration) ease,
-    border-color var(--tr-duration) ease,
-    transform var(--tr-duration) ease;
+.object-annotation--landmark {
+  /* Same as default for now... */
 }
 
 .object-annotation--ui-component {
@@ -636,26 +640,59 @@ body {
   }
 }
 
-.object-annotation--issue-cr,
-.object-annotation--issue-hi,
-.object-annotation--issue-md,
-.object-annotation--issue-lo {
-  background-color: rgba(var(--color-issue-bg--rgb), 0.3);
-  border-color: rgba(var(--color-issue-border--rgb), 0.7);
+/*  To be continued... */
+.object-annotation--issue-cr {
+  .object-annotation__box {
+    background-color: rgba(var(--severity-critical-bg), 0.3);
+    border-color: rgba(var(--severity-critical-border), 0.7);
+  }
 
-  &:hover {
-    background-color: rgba(var(--color-issue-bg--rgb), 0.6);
-    border-color: rgba(var(--color-issue-border--rgb), 1);
-
-    .bubble {
-      background-color: rgb(var(--color-issue-bg--rgb));
-      color: var(--color-issue-text-hover);
+  &:has(.object-annotation__box:hover),
+  &:has(.object-annotation__bubble:hover) {
+    .object-annotation__box {
+    }
+    .object-annotation__bubble {
     }
   }
 }
 
-.object-annotation--landmark {
-  /* ... */
+.object-annotation--issue-hi {
+  .object-annotation__box {
+  }
+
+  &:has(.object-annotation__box:hover),
+  &:has(.object-annotation__bubble:hover) {
+    .object-annotation__box {
+    }
+    .object-annotation__bubble {
+    }
+  }
+}
+
+.object-annotation--issue-md {
+  .object-annotation__box {
+  }
+
+  &:has(.object-annotation__box:hover),
+  &:has(.object-annotation__bubble:hover) {
+    .object-annotation__box {
+    }
+    .object-annotation__bubble {
+    }
+  }
+}
+
+.object-annotation--issue-lo {
+  .object-annotation__box {
+  }
+
+  &:has(.object-annotation__box:hover),
+  &:has(.object-annotation__bubble:hover) {
+    .object-annotation__box {
+    }
+    .object-annotation__bubble {
+    }
+  }
 }
 
 /* --- Bubbles (on design image overlays) --- */

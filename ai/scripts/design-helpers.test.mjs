@@ -115,19 +115,33 @@ test('prepareIssueAnnotationData: uses object boundingBox when objectID matches'
   assert.equal(item.boundingBox.width, '20.2%');
 });
 
-test('prepareIssueAnnotationData: falls back to issue boundingBox when objectID has no match', () => {
+test('prepareIssueAnnotationData: computes staggered boundingBox when objectID has no match', () => {
   const [item] = prepareIssueAnnotationData(
-    [{ severity: 'low', objectID: 'he_999', wcag: [], title: 'Issue', boundingBox: { x: 0, y: 0, width: 0.4, height: 0.2 } }],
+    [{ severity: 'low', objectID: 'he_999', wcag: [], title: 'Issue' }],
     [],
   );
-  assert.equal(item.boundingBox.width, '40.4%');
+  assert.equal(item.boundingBox.x, '-0.02%');
+  assert.equal(item.boundingBox.y, '-0.02%');
+  assert.equal(item.boundingBox.width, '4.04%');
+  assert.equal(item.boundingBox.height, '4.04%');
 });
 
-test('prepareIssueAnnotationData: uses issue boundingBox when no objectID', () => {
+test('prepareIssueAnnotationData: computes staggered boundingBox when no objectID', () => {
   const [item] = prepareIssueAnnotationData([
-    { severity: 'medium', wcag: [], title: 'Issue', boundingBox: { x: 0, y: 0, width: 0.3, height: 0.15 } },
+    { severity: 'medium', wcag: [], title: 'Issue' },
   ]);
-  assert.equal(item.boundingBox.width, '30.3%');
+  assert.equal(item.boundingBox.x, '-0.02%');
+  assert.equal(item.boundingBox.y, '-0.02%');
+  assert.equal(item.boundingBox.width, '4.04%');
+  assert.equal(item.boundingBox.height, '4.04%');
+});
+
+test('prepareIssueAnnotationData: second unpositioned item is offset horizontally', () => {
+  const [, second] = prepareIssueAnnotationData([
+    { severity: 'medium', wcag: [], title: 'First' },
+    { severity: 'low', wcag: [], title: 'Second' },
+  ]);
+  assert.equal(second.boundingBox.x, '4.48%');
 });
 
 // ── renderDesignAnnotations ───────────────────────────────────────────────────
@@ -143,7 +157,7 @@ const makeItem = (overrides = {}) => ({
 
 test('renderDesignAnnotations: bubble label is lowercase prefix with hyphen and 2-digit zero-padded index', () => {
   const html = renderDesignAnnotations([makeItem()]);
-  assert.match(html, /<span class="bubble" aria-hidden="true">he-01<\/span>/);
+  assert.match(html, /<span class="bubble object-annotation__bubble">he-01<\/span>/);
 });
 
 test('renderDesignAnnotations: bubble index increments across items', () => {
@@ -167,9 +181,9 @@ test('renderDesignAnnotations: CSS class uses issue type modifier for issues', (
   assert.match(html, /class="object-annotation object-annotation--issue-cr"/);
 });
 
-test('renderDesignAnnotations: style uses boundingBox CSS strings directly', () => {
+test('renderDesignAnnotations: style uses boundingBox values as CSS custom properties', () => {
   const html = renderDesignAnnotations([makeItem()]);
-  assert.match(html, /style="left: 10%; top: 20%; width: 30%; height: 5%"/);
+  assert.match(html, /style="--left: 10%; --top: 20%; --width: 30%; --height: 5%;"/);
 });
 
 test('renderDesignAnnotations: escapes HTML in infoText within aria-label', () => {
@@ -184,4 +198,15 @@ test('renderDesignAnnotations: escapes HTML in detailText within aria-label', ()
 
 test('renderDesignAnnotations: returns empty string for empty items array', () => {
   assert.equal(renderDesignAnnotations([]), '');
+});
+
+test('renderDesignAnnotations: null boundingBox renders with flow modifier class and no style', () => {
+  const html = renderDesignAnnotations([makeItem({ boundingBox: null })]);
+  assert.match(html, /class="object-annotation object-annotation--heading object-annotation--flow"/);
+  assert.doesNotMatch(html, /style="/);
+});
+
+test('renderDesignAnnotations: null boundingBox renders without object-annotation__box span', () => {
+  const html = renderDesignAnnotations([makeItem({ boundingBox: null })]);
+  assert.doesNotMatch(html, /object-annotation__box/);
 });

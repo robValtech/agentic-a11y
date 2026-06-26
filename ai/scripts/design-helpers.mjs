@@ -15,6 +15,10 @@ const ISSUE_ANNOTATION_TYPE_MAP = {
   low: { visualIDPrefix: 'lo', type: 'issue-lo' },
 };
 
+const STAGGER_SIZE = 0.04;
+const STAGGER_GAP = 0.005;
+const STAGGER_Y = 0;
+
 function toPercent(value) {
   const number = Number(value);
   if (!Number.isFinite(number)) {
@@ -51,22 +55,25 @@ export function prepareObjectAnnotationData(objects) {
 
 export function prepareIssueAnnotationData(issues, objects = []) {
   const objectMap = new Map(objects.filter((o) => o.id).map((o) => [o.id, o]));
+  let unpositionedCount = 0;
   return issues.map((issue) => {
-    const {
-      severity,
-      objectID,
-      wcag,
-      title,
-      boundingBox: issueBoundingBox,
-    } = issue;
+    const { severity, objectID, wcag, title } = issue;
     const { visualIDPrefix, type } = ISSUE_ANNOTATION_TYPE_MAP[severity] ?? {};
-    const resolvedBoundingBox =
-      (objectID ? objectMap.get(objectID)?.boundingBox : null) ??
-      issueBoundingBox;
+    const resolvedBoundingBox = objectID
+      ? (objectMap.get(objectID)?.boundingBox ?? null)
+      : null;
+    const boundingBox = resolvedBoundingBox
+      ? toBoundingBoxCss(resolvedBoundingBox)
+      : toBoundingBoxCss({
+          x: unpositionedCount++ * (STAGGER_SIZE + STAGGER_GAP),
+          y: STAGGER_Y,
+          width: STAGGER_SIZE,
+          height: STAGGER_SIZE,
+        });
     return {
       visualIDPrefix,
       type,
-      boundingBox: toBoundingBoxCss(resolvedBoundingBox),
+      boundingBox,
       infoText: (wcag ?? []).join(', '),
       detailText: title ?? '',
     };
@@ -81,6 +88,15 @@ export function renderDesignAnnotations(items) {
       const bubbleLabel = visualID;
       const ariaLabel = `${visualID.toUpperCase()}; ${escapeHtml(infoText)}; ${escapeHtml(detailText)}`;
       const className = `object-annotation object-annotation--${type}`;
+
+      if (!boundingBox) {
+        return (
+          `          <div class="${className} object-annotation--flow" aria-label="${ariaLabel}">\n` +
+          `            <span class="bubble object-annotation__bubble">${bubbleLabel}</span>\n` +
+          `          </div>`
+        );
+      }
+
       const style = `--left: ${boundingBox.x}; --top: ${boundingBox.y}; --width: ${boundingBox.width}; --height: ${boundingBox.height};`;
 
       return (
