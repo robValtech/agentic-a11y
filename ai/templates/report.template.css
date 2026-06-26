@@ -49,10 +49,30 @@
   --color-bubble-default-border: #0d0f1a;
   --color-bubble-default-text: var(--color-bubble-default-border);
   --color-bubble-default-text-hover: #ffffff;
-  --color-element-annotation-bg--rgb: 0, 255, 0;
-  --color-element-annotation-border--rgb: 255, 255, 255;
-  --color-element-annotation-text: var(--color-bubble-default-text);
-  --color-element-annotation-text-hover: var(--color-bubble-default-text);
+
+  --color-object-annotation-bg--rgb: 0, 255, 0;
+  --color-object-annotation-border--rgb: 255, 255, 255;
+  --color-object-annotation-text: var(--color-bubble-default-text);
+  --color-object-annotation-text-hover: var(--color-bubble-default-text);
+
+  --color-ui-component-annotation-bg--rgb: 9, 169, 255;
+  --color-ui-component-annotation-border--rgb: 255, 255, 255;
+  --color-ui-component-annotation-text: var(--color-bubble-default-text);
+  --color-ui-component-annotation-text-hover: var(
+    --color-ui-component-annotation-text--rgb
+  );
+
+  --color-heading-annotation-bg--rgb: 241, 0, 181;
+  --color-heading-annotation-border--rgb: 255, 255, 255;
+  --color-heading-annotation-text: var(--color-bubble-default-text);
+  --color-heading-annotation-text-hover: var(
+    --color-heading-annotation-text--rgb
+  );
+
+  --color-issue-annotation-bg--rgb: 230, 44, 66;
+  --color-issue-annotation-border--rgb: 255, 255, 255;
+  --color-issue-annotation-text: var(--color-bubble-default-text);
+  --color-issue-annotation-text-hover: var(--color-issue-annotation-text--rgb);
 
   --font-sans:
     -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial,
@@ -145,12 +165,32 @@
   --color-bubble-default-border: #1c1f35;
   --color-bubble-default-text: #efefef;
   --color-bubble-default-text-hover: #ffffff;
-  --color-element-annotation-bg--rgb: 0, 255, 0;
-  --color-element-annotation-border--rgb: 0, 0, 0;
-  --color-element-annotation-text--rgb: 0, 0, 0;
-  --color-element-annotation-text-hover: var(
-    --color-element-annotation-text--rgb
+
+  --color-object-annotation-bg--rgb: 0, 255, 0;
+  --color-object-annotation-border--rgb: 0, 0, 0;
+  --color-object-annotation-text--rgb: 0, 0, 0;
+  --color-object-annotation-text-hover: var(
+    --color-object-annotation-text--rgb
   );
+
+  --color-ui-component-annotation-bg--rgb: 9, 169, 255;
+  --color-ui-component-annotation-border--rgb: 0, 0, 0;
+  --color-ui-component-annotation-text--rgb: 0, 0, 0;
+  --color-ui-component-annotation-text-hover: var(
+    --color-ui-component-annotation-text--rgb
+  );
+
+  --color-heading-annotation-bg--rgb: 241, 0, 181;
+  --color-heading-annotation-border--rgb: 0, 0, 0;
+  --color-heading-annotation-text: 0, 0, 0;
+  --color-heading-annotation-text-hover: var(
+    --color-heading-annotation-text--rgb
+  );
+
+  --color-issue-annotation-bg--rgb: 230, 44, 66;
+  --color-issue-annotation-border--rgb: 0, 0, 0;
+  --color-issue-annotation-text: 0, 0, 0;
+  --color-issue-annotation-text-hover: var(--color-issue-annotation-text--rgb);
 }
 
 /* --- Reset & base --- */
@@ -389,7 +429,7 @@ body {
 
 /* When markers are hidden, suppress all positioned bubbles on the design */
 .design-container--markers-hidden .bubble,
-.design-container--markers-hidden .element-annotation {
+.design-container--markers-hidden .object-annotation {
   display: none;
 }
 
@@ -502,11 +542,11 @@ body {
   background-color: var(--color-bg);
 }
 
-/* --- Element annotations (on design image) --- */
-.element-annotation {
+/* --- object annotations (on design image overlay) --- */
+.object-annotation {
   position: absolute;
-  background-color: rgba(var(--color-element-annotation-bg--rgb), 0.3);
-  border: 1px dashed rgba(var(--color-element-annotation-border--rgb), 0.7);
+  background-color: rgba(var(--color-object-annotation-bg--rgb), 0.3);
+  border: 1px dashed rgba(var(--color-object-annotation-border--rgb), 0.7);
   z-index: 8;
   border-radius: var(--radius-sm);
   transition:
@@ -516,18 +556,63 @@ body {
 
   &:hover {
     transform: scale(1.005);
-    background-color: rgba(var(--color-element-annotation-bg--rgb), 0.6);
-    border-color: rgba(var(--color-element-annotation-border--rgb), 1);
+    background-color: rgba(var(--color-object-annotation-bg--rgb), 0.6);
+    border-color: rgba(var(--color-object-annotation-border--rgb), 1);
 
     .bubble {
       transform: translate(-50%, -50%) scale(1.2);
-      background-color: rgb(var(--color-element-annotation-bg--rgb));
-      color: var(--color-element-annotation-text-hover);
+      background-color: rgb(var(--color-object-annotation-bg--rgb));
+      color: var(--color-object-annotation-text-hover);
     }
   }
 }
 
-/* --- Bubbles (on design image) --- */
+.object-annotation--component {
+  background-color: rgba(var(--color-ui-component-annotation-bg--rgb), 0.3);
+  border-color: rgba(var(--color-ui-component-annotation-border--rgb), 0.7);
+
+  &:hover {
+    background-color: rgba(var(--color-ui-component-annotation-bg--rgb), 0.6);
+    border-color: rgba(var(--color-ui-component-annotation-border--rgb), 1);
+
+    .bubble {
+      background-color: rgb(var(--color-ui-component-annotation-bg--rgb));
+      color: var(--color-ui-component-annotation-text-hover);
+    }
+  }
+}
+
+.object-annotation--heading {
+  background-color: rgba(var(--color-heading-annotation-bg--rgb), 0.3);
+  border-color: rgba(var(--color-heading-annotation-border--rgb), 0.7);
+
+  &:hover {
+    background-color: rgba(var(--color-heading-annotation-bg--rgb), 0.6);
+    border-color: rgba(var(--color-heading-annotation-border--rgb), 1);
+
+    .bubble {
+      background-color: rgb(var(--color-heading-annotation-bg--rgb));
+      color: var(--color-heading-annotation-text-hover);
+    }
+  }
+}
+
+.object-annotation--issue {
+  background-color: rgba(var(--color-issue-bg--rgb), 0.3);
+  border-color: rgba(var(--color-issue-border--rgb), 0.7);
+
+  &:hover {
+    background-color: rgba(var(--color-issue-bg--rgb), 0.6);
+    border-color: rgba(var(--color-issue-border--rgb), 1);
+
+    .bubble {
+      background-color: rgb(var(--color-issue-bg--rgb));
+      color: var(--color-issue-text-hover);
+    }
+  }
+}
+
+/* --- Bubbles (on design image overlays) --- */
 .bubble {
   display: flex;
   align-items: center;

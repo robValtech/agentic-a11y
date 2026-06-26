@@ -175,7 +175,7 @@ export function buildObjectAnnotations(
         `height: ${height}`,
       ].join('; ');
 
-      const className = `element-annotation element-annotation--${typeLabel.toLowerCase()}`;
+      const className = `object-annotation object-annotation--${typeLabel.toLowerCase()}`;
 
       return (
         `          <div class="${className}" style="${style}" aria-label="${escapeHtml(`${typeLabel} ${id}: ${name ?? ''}, ${element.tag}`)}">\n` +
