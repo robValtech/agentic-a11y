@@ -201,8 +201,8 @@ export const WCAG_SC_LEVELS = {
 export const ISSUE_SEVERITY_ORDER = { critical: 0, high: 1, medium: 2, low: 3 };
 
 export const ISSUE_PREFIX = {
-  critical: 'C',
-  high: 'H',
-  medium: 'M',
-  low: 'L',
+  critical: 'cr',
+  high: 'hi',
+  medium: 'md',
+  low: 'lo',
 };

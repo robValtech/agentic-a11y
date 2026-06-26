@@ -55,6 +55,13 @@ export const LANDMARK_TAGS = new Set([
 ]);
 
 // ---------------------------------------------------------------------------
+// Visual ID builder
+// ---------------------------------------------------------------------------
+export function buildVisualID(prefix, n) {
+  return `${prefix}-${String(n).padStart(2, '0')}`;
+}
+
+// ---------------------------------------------------------------------------
 // HTML escaping
 // ---------------------------------------------------------------------------
 export function escapeHtml(str) {
@@ -93,7 +100,7 @@ export function buildTableRows(
 ) {
   return elements
     .map((el, i) => {
-      const id = `${prefix}${i + 1}`;
+      const id = buildVisualID(prefix, i + 1);
       const { tag, name, description, issue, issueId, severity, contains } = el;
       const sortTag = escapeHtml(tag ?? '');
       const sortIssue = issue ? (severity ?? 'medium') : 'none';
@@ -125,7 +132,7 @@ export function buildTableRows(
 
       return (
         `          <tr id="${rowIdPrefix}-${id}" data-sort-id="${i + 1}" data-sort-tag="${sortTag}" data-sort-issue="${sortIssue}">\n` +
-        `            <td><span class="bubble" aria-label="${id}">${id}</span></td>\n` +
+        `            <td><span class="bubble">${id}</span></td>\n` +
         `            <td><code class="inline-code">${escapeHtml(tag ?? '')}</code></td>\n` +
         `            <td>${escapeHtml(name ?? '')}</td>\n` +
         `            <td>${escapeHtml(description ?? '')}</td>${issueCell}${containsCell}\n` +
@@ -133,14 +140,6 @@ export function buildTableRows(
       );
     })
     .join('\n');
-}
-
-function toPercent(value) {
-  const number = Number(value);
-  if (!Number.isFinite(number)) {
-    return '0%';
-  }
-  return `${Number((number * 100).toFixed(3))}%`;
 }
 
 // TODO: Make defensive
@@ -151,39 +150,6 @@ function getObjectIDPrefix(objectID) {
 // TODO: Make defensive
 export function getObjectsByObjectIdPrefix(objects, prefix) {
   return objects.filter((object) => getObjectIDPrefix(object.id) === prefix);
-}
-
-export function buildObjectAnnotations(
-  elements,
-  { prefix = '', typeLabel = '' } = {},
-) {
-  return elements
-    .map((element, index) => {
-      const id = `${prefix}${index + 1}`;
-      const { boundingBox = {}, name } = element;
-
-      const d = 1.01;
-      const width = toPercent(boundingBox.width * d);
-      const height = toPercent(boundingBox.height * d);
-      const top = toPercent(boundingBox.y + boundingBox.height * (1 - d) * 0.5);
-      const left = toPercent(boundingBox.x + boundingBox.width * (1 - d) * 0.5);
-
-      const style = [
-        `left: ${left}`,
-        `top: ${top}`,
-        `width: ${width}`,
-        `height: ${height}`,
-      ].join('; ');
-
-      const className = `object-annotation object-annotation--${typeLabel.toLowerCase()}`;
-
-      return (
-        `          <div class="${className}" style="${style}" aria-label="${escapeHtml(`${typeLabel} ${id}: ${name ?? ''}, ${element.tag}`)}">\n` +
-        `            <span class="bubble" aria-hidden="true">${id}</span>\n` +
-        `          </div>`
-      );
-    })
-    .join('\n');
 }
 
 // ---------------------------------------------------------------------------
@@ -266,7 +232,7 @@ export function buildIssueCards(issues, objects = []) {
       const prefix = ISSUE_PREFIX[severity] ?? 'I';
       counters[severity] = (counters[severity] ?? 0) + 1;
       const confidenceScore = confidence.level;
-      const issueId = `${prefix}${counters[severity]}`;
+      const issueId = buildVisualID(prefix, counters[severity]);
       const relatedObject = objectID ? objectMap.get(objectID) : null;
       const label = relatedObject?.name ?? relatedObject?.tag ?? null;
       return buildIssueCard({

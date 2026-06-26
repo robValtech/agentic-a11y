@@ -8,12 +8,17 @@ import { transform as transformCss } from 'lightningcss';
 import {
   parseArgs,
   assertArg,
-  buildObjectAnnotations,
+  buildVisualID,
   buildTableRows,
   buildIssueCards,
   getFormattedDate,
   getObjectsByObjectIdPrefix,
 } from './helpers.mjs';
+import {
+  prepareObjectAnnotationData,
+  prepareIssueAnnotationData,
+  renderDesignAnnotations,
+} from './design-helpers.mjs';
 import { OBJECT_ID_PREFIXES } from './constants.mjs';
 import { getFormattedRuntime } from './get-formatted-runtime.mjs';
 
@@ -51,10 +56,10 @@ const uiObjects = Array.isArray(analysisData.objects)
 const a11yIssues = Array.isArray(analysisData.issues)
   ? analysisData.issues
   : [];
-const a11yIssueAnnotations = buildObjectAnnotations(a11yIssues, {
-  prefix: '',
-  typeLabel: 'Issue',
-});
+const a11yIssueAnnotations = renderDesignAnnotations(
+  prepareIssueAnnotationData(a11yIssues, uiObjects),
+);
+const a11yIssueCards = buildIssueCards(a11yIssues, uiObjects);
 
 // Landmarks
 const landmarks = getObjectsByObjectIdPrefix(
@@ -62,18 +67,17 @@ const landmarks = getObjectsByObjectIdPrefix(
   OBJECT_ID_PREFIXES.landmark,
 );
 const landmarkIdMap = new Map(
-  landmarks.filter((el) => el.id).map((el, i) => [el.id, `${i + 1}`]),
+  landmarks.filter((el) => el.id).map((el, i) => [el.id, buildVisualID('lm', i + 1)]),
 );
 const landmarkTableRows = buildTableRows(landmarks, {
-  prefix: '',
+  prefix: 'lm',
   rowIdPrefix: 'landmark',
   hasIssueCol: false,
   containsIdMap: landmarkIdMap,
 });
-const landmarkAnnotations = buildObjectAnnotations(landmarks, {
-  prefix: '',
-  typeLabel: 'Landmark',
-});
+const landmarkAnnotations = renderDesignAnnotations(
+  prepareObjectAnnotationData(landmarks),
+);
 
 // Headings
 const headings = getObjectsByObjectIdPrefix(
@@ -81,14 +85,13 @@ const headings = getObjectsByObjectIdPrefix(
   OBJECT_ID_PREFIXES.heading,
 );
 const headingTableRows = buildTableRows(headings, {
-  prefix: '',
+  prefix: 'he',
   rowIdPrefix: 'heading',
   hasIssueCol: false,
 });
-const headingAnnotations = buildObjectAnnotations(headings, {
-  prefix: '',
-  typeLabel: 'Heading',
-});
+const headingAnnotations = renderDesignAnnotations(
+  prepareObjectAnnotationData(headings),
+);
 
 // UI Components
 const uiComponents = getObjectsByObjectIdPrefix(
@@ -96,14 +99,13 @@ const uiComponents = getObjectsByObjectIdPrefix(
   OBJECT_ID_PREFIXES.uiComponent,
 );
 const uiComponentTableRows = buildTableRows(uiComponents, {
-  prefix: '',
+  prefix: 'ui',
   rowIdPrefix: 'ui-component',
   hasIssueCol: false,
 });
-const uiComponentAnnotations = buildObjectAnnotations(uiComponents, {
-  prefix: '',
-  typeLabel: 'Component',
-});
+const uiComponentAnnotations = renderDesignAnnotations(
+  prepareObjectAnnotationData(uiComponents),
+);
 
 const metaData = analysisData.meta;
 const designFile = metaData.designFile;
@@ -131,7 +133,7 @@ const html = readFileSync(join(TEMPLATE_DIR, 'report.template.html'), 'utf8')
   .replace('{{UI_COMPONENT_MARKERS}}', uiComponentAnnotations)
   // A11Y Issues
   .replace('{{A11Y_ISSUE_MARKERS}}', a11yIssueAnnotations)
-  .replace('{{A11Y_ISSUES}}', buildIssueCards(a11yIssues, uiObjects))
+  .replace('{{A11Y_ISSUES}}', a11yIssueCards)
   // Metadata
   .replace('{{METADATA_DATE}}', metaDataDate)
   .replaceAll('{{METADATA_FILE_NAME}}', designFile.name)

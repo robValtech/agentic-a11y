@@ -5,10 +5,10 @@ import {
   assertArg,
   LANDMARK_TAGS,
   escapeHtml,
+  buildVisualID,
   buildTableRows,
-  buildObjectAnnotations as buildElementAnnotations,
   getFormattedDate,
-  getConfidenceLevel,
+  getConfidenceLevelObj as getConfidenceLevel,
 } from './helpers.mjs';
 
 // ── parseArgs ─────────────────────────────────────────────────────────────────
@@ -106,46 +106,14 @@ test('LANDMARK_TAGS: excludes non-landmark tags', () => {
   assert.equal(LANDMARK_TAGS.has('button'), false);
 });
 
-// ── buildElementAnnotations ──────────────────────────────────────────────────
+// ── buildVisualID ─────────────────────────────────────────────────────────────
 
-test('buildElementAnnotations: renders landmark boxes using percentage coordinates', () => {
-  const html = buildElementAnnotations(
-    [
-      {
-        tag: 'main',
-        name: 'Main content',
-        boundingBox: { x: 0.1, y: 0.2, width: 0.3, height: 0.4 },
-      },
-    ],
-    { prefix: 'L', typeLabel: 'Landmark' },
-  );
-
-  assert.match(html, /class="element-annotation element-annotation--landmark"/);
-  // coordinates are expanded by d=1.01: left=9.85%, top=19.8%, width=30.3%, height=40.4%
-  assert.match(
-    html,
-    /style="left: 9\.85%; top: 19\.8%; width: 30\.3%; height: 40\.4%"/,
-  );
-  assert.match(html, /<span class="bubble" aria-hidden="true">L1<\/span>/);
-  assert.match(html, /aria-label="Landmark L1: Main content, main"/);
+test('buildVisualID: formats a single-digit index with zero-padding', () => {
+  assert.equal(buildVisualID('lm', 1), 'lm-01');
 });
 
-test('buildElementAnnotations: escapes landmark names in aria labels', () => {
-  const html = buildElementAnnotations(
-    [
-      {
-        tag: 'navigation',
-        name: 'Primary <nav> & "links"',
-        boundingBox: { x: 0, y: 0, width: 1, height: 0.25 },
-      },
-    ],
-    { prefix: 'L', typeLabel: 'Landmark' },
-  );
-
-  assert.match(
-    html,
-    /aria-label="Landmark L1: Primary &lt;nav&gt; &amp; &quot;links&quot;, navigation"/,
-  );
+test('buildVisualID: formats a two-digit index without extra padding', () => {
+  assert.equal(buildVisualID('cr', 12), 'cr-12');
 });
 
 // ── escapeHtml ────────────────────────────────────────────────────────────────
@@ -188,7 +156,7 @@ test('buildTableRows: renders a row with the correct id, tag, name, and descript
     [{ tag: 'nav', name: 'Main nav', description: 'Primary navigation' }],
     { prefix: 'L', rowIdPrefix: 'landmark' },
   );
-  assert.match(html, /id="landmark-L1"/);
+  assert.match(html, /id="landmark-L-01"/);
   assert.match(html, /<code class="inline-code">nav<\/code>/);
   assert.match(html, /Main nav/);
   assert.match(html, /Primary navigation/);
@@ -199,8 +167,8 @@ test('buildTableRows: uses the supplied prefix for IDs', () => {
     [{ tag: 'button', name: 'Submit', description: '' }],
     { prefix: 'C', rowIdPrefix: 'component' },
   );
-  assert.match(html, /id="component-C1"/);
-  assert.match(html, /aria-label="C1"/);
+  assert.match(html, /id="component-C-01"/);
+  assert.match(html, />C-01<\/span>/);
 });
 
 test('buildTableRows: omits issue cell when hasIssueCol is false', () => {
@@ -260,8 +228,8 @@ test('buildTableRows: assigns sequential IDs across multiple rows', () => {
     ],
     { prefix: 'L' },
   );
-  assert.match(html, /aria-label="L1"/);
-  assert.match(html, /aria-label="L2"/);
+  assert.match(html, />L-01<\/span>/);
+  assert.match(html, />L-02<\/span>/);
 });
 
 test('buildTableRows: renders contains bubbles when containsIdMap is provided and contains is populated', () => {
@@ -299,48 +267,48 @@ test('buildTableRows: omits contains cell when containsIdMap is not provided', (
 
 // ── getConfidenceLevel ────────────────────────────────────────────────────────
 
-test('getConfidenceLevel: returns "Very low" for 0', () => {
-  assert.equal(getConfidenceLevel(0).label, 'Very low');
+test('getConfidenceLevel: returns "very low" for 0', () => {
+  assert.equal(getConfidenceLevel(0).label, 'very low');
 });
 
-test('getConfidenceLevel: returns "Very low" at the 0.4 boundary', () => {
-  assert.equal(getConfidenceLevel(0.4).label, 'Very low');
+test('getConfidenceLevel: returns "very low" at the 0.4 boundary', () => {
+  assert.equal(getConfidenceLevel(0.4).label, 'very low');
 });
 
-test('getConfidenceLevel: returns "Low" just above 0.4', () => {
-  assert.equal(getConfidenceLevel(0.41).label, 'Low');
+test('getConfidenceLevel: returns "low" just above 0.4', () => {
+  assert.equal(getConfidenceLevel(0.41).label, 'low');
 });
 
-test('getConfidenceLevel: returns "Low" at the 0.6 boundary', () => {
-  assert.equal(getConfidenceLevel(0.6).label, 'Low');
+test('getConfidenceLevel: returns "low" at the 0.6 boundary', () => {
+  assert.equal(getConfidenceLevel(0.6).label, 'low');
 });
 
-test('getConfidenceLevel: returns "Moderate" just above 0.6', () => {
-  assert.equal(getConfidenceLevel(0.61).label, 'Moderate');
+test('getConfidenceLevel: returns "moderate" just above 0.6', () => {
+  assert.equal(getConfidenceLevel(0.61).label, 'moderate');
 });
 
-test('getConfidenceLevel: returns "Moderate" at the 0.75 boundary', () => {
-  assert.equal(getConfidenceLevel(0.75).label, 'Moderate');
+test('getConfidenceLevel: returns "moderate" at the 0.75 boundary', () => {
+  assert.equal(getConfidenceLevel(0.75).label, 'moderate');
 });
 
-test('getConfidenceLevel: returns "High" just above 0.75', () => {
-  assert.equal(getConfidenceLevel(0.76).label, 'High');
+test('getConfidenceLevel: returns "high" just above 0.75', () => {
+  assert.equal(getConfidenceLevel(0.76).label, 'high');
 });
 
-test('getConfidenceLevel: returns "High" at the 0.9 boundary', () => {
-  assert.equal(getConfidenceLevel(0.9).label, 'High');
+test('getConfidenceLevel: returns "high" at the 0.9 boundary', () => {
+  assert.equal(getConfidenceLevel(0.9).label, 'high');
 });
 
-test('getConfidenceLevel: returns "Very high" just above 0.9', () => {
-  assert.equal(getConfidenceLevel(0.91).label, 'Very high');
+test('getConfidenceLevel: returns "very high" just above 0.9', () => {
+  assert.equal(getConfidenceLevel(0.91).label, 'very high');
 });
 
-test('getConfidenceLevel: returns "Very high" at 1.0', () => {
-  assert.equal(getConfidenceLevel(1).label, 'Very high');
+test('getConfidenceLevel: returns "very high" at 1.0', () => {
+  assert.equal(getConfidenceLevel(1).label, 'very high');
 });
 
-test('getConfidenceLevel: falls back to "Very low" for out-of-range values above 1', () => {
-  assert.equal(getConfidenceLevel(1.5).label, 'Very low');
+test('getConfidenceLevel: falls back to "very low" for out-of-range values above 1', () => {
+  assert.equal(getConfidenceLevel(1.5).label, 'very low');
 });
 
 // ── getFormattedDate ──────────────────────────────────────────────────────────
