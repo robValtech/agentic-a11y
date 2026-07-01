@@ -58,16 +58,12 @@
   --color-ui-component-annotation-bg--rgb: 9, 169, 255;
   --color-ui-component-annotation-border--rgb: 255, 255, 255;
   --color-ui-component-annotation-text: var(--color-bubble-default-text);
-  --color-ui-component-annotation-text-hover: var(
-    --color-ui-component-annotation-text--rgb
-  );
+  --color-ui-component-annotation-text-hover: var(--color-bubble-default-text);
 
   --color-heading-annotation-bg--rgb: 241, 0, 181;
   --color-heading-annotation-border--rgb: 255, 255, 255;
   --color-heading-annotation-text: var(--color-bubble-default-text);
-  --color-heading-annotation-text-hover: var(
-    --color-heading-annotation-text--rgb
-  );
+  --color-heading-annotation-text-hover: var(--color-bubble-default-text);
 
   --color-issue-annotation-bg--rgb: 230, 44, 66;
   --color-issue-annotation-border--rgb: 255, 255, 255;
@@ -207,6 +203,10 @@ figure {
 a {
   border-radius: var(--radius-sm);
   color: var(--color-text);
+}
+
+summary > * {
+  display: inline-block;
 }
 
 .easy-read {
@@ -601,6 +601,25 @@ body {
   /* Same as default for now... */
 }
 
+.object-annotation--heading {
+  .object-annotation__box {
+    background-color: rgba(var(--color-heading-annotation-bg--rgb), 0.3);
+    border-color: rgba(var(--color-heading-annotation-border--rgb), 0.7);
+  }
+
+  &:has(.object-annotation__box:hover),
+  &:has(.object-annotation__bubble:hover) {
+    .object-annotation__box {
+      background-color: rgba(var(--color-heading-annotation-bg--rgb), 0.6);
+      border-color: rgba(var(--color-heading-annotation-border--rgb), 1);
+    }
+    .object-annotation__bubble {
+      background-color: rgb(var(--color-heading-annotation-bg--rgb));
+      color: var(--color-heading-annotation-text-hover);
+    }
+  }
+}
+
 .object-annotation--ui-component {
   .object-annotation__box {
     background-color: rgba(var(--color-ui-component-annotation-bg--rgb), 0.3);
@@ -617,25 +636,6 @@ body {
     .object-annotation__bubble {
       background-color: rgb(var(--color-ui-component-annotation-bg--rgb));
       color: var(--color-ui-component-annotation-text-hover);
-    }
-  }
-}
-
-.object-annotation--heading {
-  .object-annotation__box {
-    background-color: rgba(var(--color-heading-annotation-bg--rgb), 0.3);
-    border-color: rgba(var(--color-heading-annotation-border--rgb), 0.7);
-  }
-
-  &:has(.object-annotation__box:hover),
-  &:has(.object-annotation__bubble:hover) {
-    .object-annotation__box {
-      background-color: rgba(var(--color-heading-annotation-bg--rgb), 0.6);
-      border-color: rgba(var(--color-heading-annotation-border--rgb), 1);
-    }
-    .object-annotation__bubble {
-      background-color: rgb(var(--color-heading-annotation-bg--rgb));
-      color: var(--color-heading-annotation-text-hover);
     }
   }
 }
@@ -898,6 +898,7 @@ th[aria-sort="descending"] .sort-icon::after {
   padding: 2px 8px;
   border-radius: var(--radius-sm);
   flex-shrink: 0;
+  text-transform: uppercase;
 }
 
 .badge--critical {
@@ -1141,6 +1142,7 @@ th[aria-sort="descending"] .sort-icon::after {
 /* --- Visible keyboard focus indicator --- */
 a,
 button,
+summary,
 [role="tabpanel"] {
   position: relative;
 
@@ -1155,6 +1157,7 @@ button,
 
 a:focus,
 button:focus,
+summary:focus,
 [role="tabpanel"]:focus {
   outline: none;
 
@@ -1168,6 +1171,7 @@ button:focus,
 
 a:focus:not(:focus-visible),
 button:focus:not(:focus-visible),
+summary:focus:not(:focus-visible),
 [role="tabpanel"]:focus:not(:focus-visible) {
   outline: none;
   box-shadow: none;
@@ -1179,6 +1183,7 @@ button:focus:not(:focus-visible),
 
 a:focus-visible,
 button:focus-visible,
+summary:focus-visible,
 [role="tabpanel"]:focus-visible {
   &::after {
     border-radius: inherit;

@@ -375,10 +375,12 @@
                 </tbody>
               </table>
 
-              <div class="easy-read">
-                <h3>
-                  Top 10 landmark best practices (not just for developers)
-                </h3>
+              <details class="easy-read">
+                <summary>
+                  <h3>
+                    Top 10 landmark best practices (not just for developers)
+                  </h3>
+                </summary>
                 <ol class="list">
                   <li>
                     Use native HTML elements, not just ARIA roles. Write
@@ -494,7 +496,140 @@
                     never skips levels.
                   </li>
                 </ol>
-              </div>
+              </details>
+              <details open>
+                <summary>
+                  <h3>Landmark naming best practices</h3>
+                </summary>
+                <h4>Core Rule</h4>
+                <p>
+                  When there is more than one landmark of the same type on a
+                  page (e.g., two
+                  <code class="inline-code">&lt;nav&gt;</code> elements, two
+                  <code class="inline-code">&lt;section&gt;</code> elements with
+                  role="region"), each must have a unique accessible name so
+                  screen reader users can distinguish them. If there is only one
+                  of a given landmark type, an explicit name is optional — the
+                  type alone is usually sufficient.
+                </p>
+                <p>
+                  <strong>Source:</strong>
+                  <a
+                    href="https://www.w3.org/WAI/ARIA/apg/practices/landmark-regions"
+                    >WAI-ARIA APG, landmark regions section</a
+                  >.
+                </p>
+                <h4>How to Name a Landmark</h4>
+                <strong>In order of preference per the spec:</strong>
+                <ol>
+                  <li>
+                    <strong>aria-labelledby</strong> pointing to a visible
+                    heading or text already on the page — preferred because it
+                    ties the landmark to visible content (single source of
+                    truth, no duplication).
+                  </li>
+                  <li>
+                    <strong>aria-label</strong> when there is no suitable
+                    visible text to reference (e.g., a nav with only icon
+                    links).
+                  </li>
+                  <li>
+                    A native <code class="inline-code">&lt;h1&gt;</code>-<code
+                      class="inline-code"
+                      >&lt;h6&gt;</code
+                    >
+                    is not itself sufficient for sectioning content to count as
+                    named in the landmark sense. You still need
+                    <code class="inline-code">aria-label</code> or
+                    <code class="inline-code">aria-labelledby</code> on the
+                    landmark element itself, though using the heading as the
+                    <code class="inline-code">aria-labelledby</code> target is
+                    the common pattern.
+                  </li>
+                </ol>
+                <h4>Landmark-Specific Notes</h4>
+                <h5><code class="inline-code">&lt;nav&gt;</code></h5>
+                <ul>
+                  <li>
+                    Name each one when there are multiples (e.g., "Primary",
+                    "Footer", "Breadcrumb").
+                  </li>
+                  <li>
+                    Avoid redundant words like "navigation" in the label —
+                    screen readers already announce the role, so
+                    <code class="inline-code"
+                      >aria-label="Primary navigation"</code
+                    >
+                    produces <strong>"Primary navigation navigation"</strong> in
+                    some AT.
+                  </li>
+                  <li>
+                    APG examples use short labels like
+                    <strong>"Site"</strong> or <strong>"Component"</strong>.
+                  </li>
+                </ul>
+
+                <h5><code class="inline-code">&lt;main&gt;</code></h5>
+                <ul>
+                  <li>
+                    Should be unique per page; only one is expected, so naming
+                    is rarely needed.
+                  </li>
+                </ul>
+
+                <h5>
+                  <code class="inline-code">&lt;header&gt;</code> /
+                  <code class="inline-code">&lt;footer&gt;</code>
+                </h5>
+                <ul>
+                  <li>
+                    Only count as <code class="inline-code">banner</code> /
+                    <code class="inline-code">contentinfo</code> landmarks when
+                    not nested inside
+                    <code class="inline-code">&lt;article&gt;</code>,
+                    <code class="inline-code">&lt;aside&gt;</code>,
+                    <code class="inline-code">&lt;main&gt;</code>,
+                    <code class="inline-code">&lt;nav&gt;</code>, or
+                    <code class="inline-code">&lt;section&gt;</code>. In those
+                    nested contexts they have no landmark role, so labelling
+                    does not apply.
+                  </li>
+                </ul>
+
+                <h5>
+                  <code class="inline-code">&lt;section&gt;</code> /
+                  <code class="inline-code">role="region"</code>
+                </h5>
+
+                <ul>
+                  <li>
+                    Must have an explicit name to be exposed as a landmark at
+                    all.
+                  </li>
+                  <li>
+                    An unlabelled
+                    <code class="inline-code">&lt;section&gt;</code> is not
+                    announced as a region landmark in most browser/AT
+                    combinations.
+                  </li>
+                  <li>
+                    <strong>Source:</strong>
+                    <a href="https://www.w3.org/TR/html-aam/"
+                      >HTML Accessibility API Mappings (HTML-AAM) spec.</a
+                    >
+                  </li>
+                </ul>
+
+                <h5>
+                  <code class="inline-code">&lt;aside&gt;</code> (complementary)
+                </h5>
+                <ul>
+                  <li>
+                    Same rule as <code class="inline-code">&lt;nav&gt;</code> —
+                    name it if there are multiple per page.
+                  </li>
+                </ul>
+              </details>
             </div>
           </div>
 
