@@ -172,7 +172,7 @@ function buildIssueCard({ issueId, severity, confidenceScore, label, issue }) {
         `                href="${href}"\n` +
         `                target="_blank"\n` +
         `                rel="noopener noreferrer"\n` +
-        `                >SC ${sc}(${level})</a\n` +
+        `                >SC ${sc} (${level})</a\n` +
         `              >${comma}\n` +
         `            </li>`
       );

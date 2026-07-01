@@ -7,6 +7,7 @@ import {
   escapeHtml,
   buildVisualID,
   buildTableRows,
+  buildIssueCards,
   getFormattedDate,
   getConfidenceLevelObj as getConfidenceLevel,
 } from './helpers.mjs';
@@ -263,6 +264,50 @@ test('buildTableRows: omits contains cell when containsIdMap is not provided', (
     { tag: 'nav', name: 'Nav', description: '', contains: ['lm_001'] },
   ]);
   assert.doesNotMatch(html, /lm_001/);
+});
+
+// ── buildIssueCards ───────────────────────────────────────────────────────────
+
+const makeIssue = (overrides = {}) => ({
+  severity: 'high',
+  wcag: ['1.4.3'],
+  title: 'Low contrast',
+  description: 'Text contrast ratio is too low.',
+  fix: 'Increase contrast ratio to at least 4.5:1.',
+  confidence: { level: 0.8 },
+  ...overrides,
+});
+
+test('buildIssueCards: badge renders visual ID with severity prefix and zero-padded index', () => {
+  const html = buildIssueCards([makeIssue({ severity: 'critical' })]);
+  assert.match(html, /class="issue-card__badge badge--critical">cr-01<\/span>/);
+});
+
+test('buildIssueCards: article id uses visual ID format', () => {
+  const html = buildIssueCards([makeIssue({ severity: 'high' })]);
+  assert.match(html, /id="issue-hi-01"/);
+});
+
+test('buildIssueCards: assigns sequential visual IDs per severity', () => {
+  const html = buildIssueCards([
+    makeIssue({ severity: 'critical' }),
+    makeIssue({ severity: 'critical' }),
+  ]);
+  assert.match(html, /badge--critical">cr-01<\/span>/);
+  assert.match(html, /badge--critical">cr-02<\/span>/);
+});
+
+test('buildIssueCards: sorts by severity before assigning IDs', () => {
+  const html = buildIssueCards([
+    makeIssue({ severity: 'low' }),
+    makeIssue({ severity: 'critical' }),
+  ]);
+  assert.match(html, /badge--critical">cr-01<\/span>/);
+  assert.match(html, /badge--low">lo-01<\/span>/);
+});
+
+test('buildIssueCards: returns empty string for empty array', () => {
+  assert.equal(buildIssueCards([]), '');
 });
 
 // ── getConfidenceLevel ────────────────────────────────────────────────────────
